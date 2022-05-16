@@ -1,11 +1,15 @@
-version: '3.3'
+version: "3.3"
 
 services:
   client:
     image: node:16.15.0-alpine3.15
     working_dir: /app
+    environment:
+      - CHOKIDAR_USEPOLLING=true
     volumes:
       - .:/app/
     ports:
-      - "8080:8080"
-    command: yarn run serve
+      - "3000:3000"
+    tty: true
+    stdin_open: true
+    command: yarn run dev --host
