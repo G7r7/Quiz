@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+  api:
+    build: ./api
+    volumes:
+      - ./api:/app
+    ports:
+      - 5000:5000
+    working_dir: /app
+    command: ["uvicorn", "main:api_server", "--host=0.0.0.0", "--port=5000"]
