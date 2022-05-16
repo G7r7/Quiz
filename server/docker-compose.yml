@@ -2,6 +2,9 @@ version: '3.3'
 
 services:
   api:
+    container_name: api
+    depends_on:
+      - db
     build: ./api
     volumes:
       - ./api:/app
@@ -9,3 +12,26 @@ services:
       - 5000:5000
     working_dir: /app
     command: ["uvicorn", "main:api_server", "--host=0.0.0.0", "--port=5000"]
+  db:
+    container_name: db
+    image:  postgres:12.3-alpine
+    volumes:
+      - ./db/scripts:/docker-entrypoint-initdb.d
+      - ../db/data:/tmp
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgresql/data/pgdata
+  pgadmin:
+    container_name: pgadmin
+    depends_on:
+      - db
+    image: dpage/pgadmin4:6.9
+    ports:
+      - 4000:80
+    volumes:
+      - ./pgadmin/servers.json:/pgadmin4/servers.json
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
