@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
-import models
-import schemas
+import src.models as models
+import src.schemas as schemas
 
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
@@ -34,3 +34,6 @@ def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
     db.commit()
     db.refresh(db_item)
     return db_item
+
+def dump_quiz(db: Session, user_id: str):
+    return db.query(models.QuizTable).all().where(models.UserTable.id == user_id)

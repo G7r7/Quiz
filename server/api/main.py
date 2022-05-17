@@ -8,7 +8,9 @@ import src.models as models
 import src.schemas as schemas
 from src.database import SessionLocal, engine
 
-models.Base.metadata.create_all(bind=engine)
+import src.utils as utils
+
+#models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -55,3 +57,10 @@ def create_item_for_user(
 def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     items = crud.get_items(db, skip=skip, limit=limit)
     return items
+
+@app.get("/quiz/{user_id}", response_model=List[schemas.Quiz])
+def get_user_quiz(user_id: int, db: Session = Depends(get_db)):
+    list_quiz = crud.dump_quiz(db, user_id)
+    return list_quiz
+
+@app.post("/token/")
