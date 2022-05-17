@@ -5,7 +5,7 @@ class UserBase(BaseModel):
     user_name: str
 
 class UserCreate(UserBase):
-    password: str
+    user_password: str
 
 class User(UserBase):
     id: number
