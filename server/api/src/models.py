@@ -1,5 +1,5 @@
 # coding: utf-8
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Numeric, String
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Numeric, String, Integer
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -7,50 +7,51 @@ Base = declarative_base()
 metadata = Base.metadata
 
 
-class UserTable(Base):
-    __tablename__ = 'user_table'
+class User(Base):
+    __tablename__ = 'user'
 
+    id = Column(Integer, primary_key=True, index=True)
     user_name = Column(String(100))
     user_password = Column(String(100))
-    id = Column(String(100), primary_key=True)
 
 
-class QuizTable(Base):
-    __tablename__ = 'quiz_table'
+class Quiz(Base):
+    __tablename__ = 'quiz'
 
+    id = Column(Integer, primary_key=True, index=True)
     quiz_name = Column(String(100))
-    id = Column(String(100), primary_key=True)
-    user_id = Column(ForeignKey('user_table.id'))
+    user_id = Column(ForeignKey('user.id'))
     date_creation = Column(DateTime)
 
-    user = relationship('UserTable')
+    user = relationship('User')
 
 
 class Invitation(Base):
     __tablename__ = 'invitation'
 
+    id = Column(Integer, primary_key=True, index=True)
     invit_url = Column(String(100), primary_key=True)
-    quiz_id = Column(ForeignKey('quiz_table.id'))
+    quiz_id = Column(ForeignKey('quiz.id'))
 
-    quiz = relationship('QuizTable')
+    quiz = relationship('Quiz')
 
 
 class Question(Base):
     __tablename__ = 'questions'
 
-    quiz_id = Column(ForeignKey('quiz_table.id'))
-    id = Column(String(100), primary_key=True)
+    id = Column(Integer, primary_key=True, index=True)
+    quiz_id = Column(ForeignKey('quiz.id'))
     number_question = Column(Numeric)
     content = Column(String(1000))
 
-    quiz = relationship('QuizTable')
+    quiz = relationship('Quiz')
 
 
 class Response(Base):
     __tablename__ = 'responses'
 
+    id = Column(Integer, primary_key=True, index=True)
     question_id = Column(ForeignKey('questions.id'))
-    id = Column(String(100), primary_key=True)
     content = Column(String(1000))
     is_true = Column(Boolean)
 
