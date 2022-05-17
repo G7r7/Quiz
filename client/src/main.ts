@@ -2,14 +2,14 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import VuePiniaWS from "./plugins/VuePiniaWS";
 import { createPinia } from "pinia";
-import useWebsocketStore from "./stores/useWebsocketStore";
+import useQuizStore from "./stores/useQuizStore";
 
 const app = createApp(App);
 app.use(createPinia());
 app.use(
   new VuePiniaWS({
     connection: "http://localhost:7000",
-    pinia: { store: useWebsocketStore, actionPrefix: "" },
+    pinia: { store: useQuizStore, actionPrefix: "" },
   })
 );
 app.mount("#app");
