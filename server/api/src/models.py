@@ -1,5 +1,5 @@
 # coding: utf-8
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Numeric, String
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Numeric, String, Integer
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -10,16 +10,16 @@ metadata = Base.metadata
 class User(Base):
     __tablename__ = 'user'
 
+    id = Column(Integer, primary_key=True, index=True)
     user_name = Column(String(100))
     user_password = Column(String(100))
-    id = Column(String(100), primary_key=True)
 
 
 class Quiz(Base):
     __tablename__ = 'quiz'
 
+    id = Column(Integer, primary_key=True, index=True)
     quiz_name = Column(String(100))
-    id = Column(String(100), primary_key=True)
     user_id = Column(ForeignKey('user.id'))
     date_creation = Column(DateTime)
 
@@ -29,6 +29,7 @@ class Quiz(Base):
 class Invitation(Base):
     __tablename__ = 'invitation'
 
+    id = Column(Integer, primary_key=True, index=True)
     invit_url = Column(String(100), primary_key=True)
     quiz_id = Column(ForeignKey('quiz.id'))
 
@@ -38,8 +39,8 @@ class Invitation(Base):
 class Question(Base):
     __tablename__ = 'questions'
 
+    id = Column(Integer, primary_key=True, index=True)
     quiz_id = Column(ForeignKey('quiz.id'))
-    id = Column(String(100), primary_key=True)
     number_question = Column(Numeric)
     content = Column(String(1000))
 
@@ -49,8 +50,8 @@ class Question(Base):
 class Response(Base):
     __tablename__ = 'responses'
 
+    id = Column(Integer, primary_key=True, index=True)
     question_id = Column(ForeignKey('questions.id'))
-    id = Column(String(100), primary_key=True)
     content = Column(String(1000))
     is_true = Column(Boolean)
 
