@@ -1,12 +1,25 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import HelloWorld from "./components/HelloWorld.vue";
+import Question from "./components/Question.vue";
 </script>
 
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite" />
+  <Question
+    :props="{
+      question: {
+        quiz_id: 0,
+        id: 0,
+        content: 'Bonjour comment allez-vous ?',
+        multipleAnswers: false,
+        answers: [
+          { question_id: 0, id: 1, content: 'lorem ipsum', is_true: true },
+          { question_id: 0, id: 2, content: 'lorem ipsum', is_true: true },
+          { question_id: 0, id: 3, content: 'lorem ipsum', is_true: false },
+        ],
+      },
+    }"
+  />
 </template>
 
 <style>
