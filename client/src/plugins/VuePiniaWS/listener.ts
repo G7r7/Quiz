@@ -19,20 +19,14 @@ export default class Listener {
     "pong",
   ];
 
-  io: Socket<DefaultEventsMap, DefaultEventsMap>;
   emitter: Emitter;
 
-  constructor(
-    io: Socket<DefaultEventsMap, DefaultEventsMap>,
-    emitter: Emitter
-  ) {
-    this.io = io;
-    this.register();
+  constructor(emitter: Emitter) {
     this.emitter = emitter;
   }
 
-  register() {
-    this.io["onevent"] = (packet: { data: any }) => {
+  register(io: Socket<DefaultEventsMap, DefaultEventsMap>) {
+    io["onevent"] = (packet: { data: any }) => {
       const event = packet.data[0];
       let [, ...args] = packet.data;
       if (args.length === 1) args = args[0];
@@ -40,7 +34,7 @@ export default class Listener {
       this.onEvent(event, args);
     };
     Listener.staticEvents.forEach((event) =>
-      this.io.on(event, (args) => this.onEvent(event, args))
+      io.on(event, (args) => this.onEvent(event, args))
     );
   }
 
