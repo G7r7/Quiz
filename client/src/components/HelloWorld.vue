@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { inject } from "vue";
-import useWebsocketStore from "../stores/useWebsocketStore";
+import useQuizStore from "../stores/useQuizStore";
 
-const store = useWebsocketStore();
+const store = useQuizStore();
 const $vuePiniaWS: any = inject("vuePiniaWS");
 $vuePiniaWS.mount();
 
