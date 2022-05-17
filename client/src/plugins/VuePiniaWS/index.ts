@@ -8,7 +8,6 @@ import Mixin from "./mixin";
 export interface pinia {
   store?: StoreDefinition;
   actionPrefix?: string;
-  mutationPrefix?: string;
   options?: {
     useConnectionNamespace?: boolean;
   };
@@ -24,21 +23,25 @@ interface VuePiniaWSOptions {
 }
 
 export default class VuePiniaWS {
-  io: Socket<DefaultEventsMap, DefaultEventsMap>;
+  io: Socket<DefaultEventsMap, DefaultEventsMap> | undefined;
   emitter: Emitter;
   listener: Listener;
+  options: { path?: string } | undefined;
+  connection: string;
+
   constructor({ connection, pinia, options }: VuePiniaWSOptions) {
-    this.io = this.connect(connection, options);
+    this.io = undefined;
+    this.options = options;
+    this.connection = connection;
     this.emitter = new Emitter(pinia);
-    this.listener = new Listener(this.io, this.emitter);
+    this.listener = new Listener(this.emitter);
   }
 
   install(Vue: any) {
     const version = Number(Vue.version.split(".")[0]);
 
     if (version >= 3) {
-      Vue.config.globalProperties.$socket = this.io;
-      Vue.config.globalProperties.$vuePiniaWS = this;
+      Vue.provide("vuePiniaWS", this);
     } else {
       Vue.prototype.$socket = this.io;
       Vue.prototype.$vuePiniaWS = this;
@@ -55,5 +58,10 @@ export default class VuePiniaWS {
     } else {
       throw new Error("Unsupported connection type");
     }
+  }
+
+  mount() {
+    this.io = this.connect(this.connection, this.options);
+    this.listener.register(this.io);
   }
 }

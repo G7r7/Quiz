@@ -12,7 +12,8 @@ export default class Emitter {
   listeners: Map<string, listener[]>;
   constructor(pinia: pinia | undefined) {
     this.store = pinia?.store;
-    this.actionPrefix = pinia?.actionPrefix ? pinia.actionPrefix : "SOCKET_";
+    this.actionPrefix =
+      pinia?.actionPrefix !== undefined ? pinia.actionPrefix : "SOCKET_";
     this.listeners = new Map();
   }
 
@@ -59,19 +60,18 @@ export default class Emitter {
       );
 
       const fns: any[] = keys
-        .map((key) => s[key])
-        .filter((fn) => typeof fn === "function");
+        .map((key) => ({ key, fn: s[key] }))
+        .filter(({ fn }) => typeof fn === "function");
 
-      if (s && fns && fns.length > 0) {
+      if (fns && fns.length > 0) {
         const prefixed_event = this.actionPrefix + event;
 
-        for (const key in fns) {
-          const action = key.split("/").pop();
-
+        fns.forEach((fn) => {
+          const action = fn.key.split("/").pop();
           if (action === prefixed_event) {
-            s[key](args);
+            fn.fn(args);
           }
-        }
+        });
       }
     }
   }
