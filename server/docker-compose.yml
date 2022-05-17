@@ -2,16 +2,17 @@ version: '3.3'
 
 services:
   api:
+    env_file:
+      - .env
     container_name: api
     depends_on:
       - db
     build: ./api
     volumes:
       - ./api:/app
-      - ./.env:/app/.env
     ports:
       - 5000:5000
-    working_dir: /app/src
+    working_dir: /app
     command: ["uvicorn", "main:app", "--host=0.0.0.0", "--port=5000"]
   db:
     container_name: db
