@@ -2,10 +2,15 @@
 import { ref } from "vue";
 import { Question } from "../model/Question";
 import Response from "./Response.vue";
+import { inject } from "vue";
 
 interface QuestionProps {
   question: Question;
 }
+
+const $vuePiniaWS: any = inject("vuePiniaWS");
+$vuePiniaWS.mount();
+$vuePiniaWS.io.emit("hello");
 defineProps<{ props: QuestionProps }>();
 
 const selected = ref([]);
