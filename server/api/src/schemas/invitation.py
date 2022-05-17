@@ -1,6 +1,5 @@
 from typing import List, Union
 from datetime import date
-from numpy import number
 from pydantic import BaseModel
 
 class InvitationBase(BaseModel):

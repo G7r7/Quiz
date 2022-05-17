@@ -1,4 +1,3 @@
-from numpy import number
 from pydantic import BaseModel
 
 class UserBase(BaseModel):
@@ -8,7 +7,7 @@ class UserCreate(UserBase):
     user_password: str
 
 class User(UserBase):
-    id: number
+    id: int
 
     class Config:
         orm_mode = True
