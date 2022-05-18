@@ -1,4 +1,5 @@
 ﻿from typing import Union
+from typing import Union
 from sqlalchemy.orm import Session
 from .. import models 
 from ..schemas import response as responseSchemas
@@ -10,3 +11,5 @@ def create_response(db: Session, response: responseSchemas.ResponseCreate):
     db.refresh(db_response)
     response: responseSchemas.Response = responseSchemas.Response(id=db_response.id, content=db_response.content, question_id=db_response.question_id, is_true=db_response.is_true)
     return response
+def get_responses(db: Session, question_id: int):
+    return db.query(models.Response).filter(models.Response.question_id == question_id)
