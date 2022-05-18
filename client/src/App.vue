@@ -7,6 +7,9 @@ import Question from "./components/Question.vue";
 import useQuizStore from "./stores/useQuizStore";
 const vuePiniaWS: any = inject("vuePiniaWS");
 vuePiniaWS.mount();
+import FormUser from "./components/FormUser.vue";
+import FormQuiz from "./components/FormQuiz.vue";
+
 const store = useQuizStore();
 store.io = vuePiniaWS.io;
 </script>

@@ -3,7 +3,7 @@
 /* eslint-disable */
 
 export type QuizCreate = {
-    name: string;
+    quiz_name: string;
     date_creation: string;
     user_id: number;
 };

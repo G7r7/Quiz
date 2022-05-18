@@ -3,7 +3,7 @@ from datetime import date
 from pydantic import BaseModel
         
 class QuizBase(BaseModel):
-    name: str
+    quiz_name: str
     date_creation: date
 
 class QuizCreate(QuizBase):
