@@ -1,20 +1,17 @@
-from ..utils.constant import GlobalVar
+from ..utils.constant import mem_quiz, sio
 from ..utils.fun import *
 from ..utils.player import Player
-
-MEM_QUIZ = GlobalVar.MEM_QUIZ
-sio = GlobalVar.SIO
 
 @sio.event
 async def enter_quiz(sid, data):
     
-    recieved_token = await parse_token(sio, sid, data, list_tokens=MEM_QUIZ.player_tokens())
+    recieved_token = await parse_token(sio, sid, data, list_tokens=mem_quiz.player_tokens())
     player_name = await parse_name(sio, sid, data)
     
     if recieved_token is None or player_name is None:
         return
         
-    quiz = MEM_QUIZ[recieved_token]
+    quiz = mem_quiz[recieved_token]
     if not quiz.open_to_register:
         await sio.emit("quiz_closed_to_register", to=sid)
         return
@@ -34,13 +31,13 @@ async def enter_quiz(sid, data):
 @sio.event
 async def start_quiz(sid, data):
     
-    recieved_player_token = await parse_token(sio, sid, data, list_tokens=MEM_QUIZ.player_tokens(), token="player_token")
-    recieved_admin_tokens = await parse_token(sio, sid, data, list_tokens=MEM_QUIZ.admin_tokens(), token="admin_token")
+    recieved_player_token = await parse_token(sio, sid, data, list_tokens=mem_quiz.player_tokens(), token="player_token")
+    recieved_admin_tokens = await parse_token(sio, sid, data, list_tokens=mem_quiz.admin_tokens(), token="admin_token")
 
     if recieved_player_token is not None and recieved_admin_tokens is not None:
         
-        quiz = MEM_QUIZ[recieved_player_token]
-        MEM_QUIZ.play_quiz(quiz)
+        quiz = mem_quiz[recieved_player_token]
+        mem_quiz.play_quiz(quiz)
         
         await sio.emit("start_quiz", room=recieved_admin_tokens, skip_sid=sid)
         
@@ -57,8 +54,8 @@ async def start_quiz(sid, data):
             # Pass to next question
             
         # Broadcast Winner
-        # Clean infos in MEM_QUIZ
-        MEM_QUIZ.end_quiz(quiz)
+        # Clean infos in mem_quiz
+        mem_quiz.end_quiz(quiz)
         
     else:
         await sio.emit("not_auth_to_start_quiz", to=sid)
@@ -67,6 +64,6 @@ async def start_quiz(sid, data):
 
 @sio.event
 async def receive_response(sid, data):
-    player = MEM_QUIZ.get_player_from_sid()
+    player = mem_quiz.get_player_from_sid()
     player.add_response(data)
     

@@ -2,10 +2,12 @@ from .token_collector import TokenCollector
 from .memory_quiz import MemoryQuiz
 import socketio
 
-class GlobalVar:
+mem_quiz = MemoryQuiz()
+token_collector = TokenCollector(mem=mem_quiz, interval=1)
+sio = socketio.AsyncServer(logger=True, engineio_logger=True, async_mode='asgi', cors_allowed_origins="*")
 
-    MEM_QUIZ = MemoryQuiz()
-    TOKEN_COLLECTOR = TokenCollector(mem=MEM_QUIZ, interval=1)
-    SIO = socketio.AsyncServer(logger=True, engineio_logger=True, async_mode='asgi', cors_allowed_origins="*")
-    APP_SOCKET = socketio.ASGIApp(SIO)
+# Add events to the SIO
+from ..events.quiz import *
+
+app_socket = socketio.ASGIApp(sio)
 

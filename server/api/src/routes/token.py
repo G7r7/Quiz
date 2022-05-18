@@ -2,12 +2,9 @@ from typing import List
 from fastapi import Depends, APIRouter
 from ..utils.quiz import Quiz
 from ..utils.token import Token
-from ..utils.constant import GlobalVar
-
-MEM_QUIZ = GlobalVar.MEM_QUIZ
+from ..utils.constant import mem_quiz
 
 router = APIRouter()
-
 
 @router.post("/token")
 def generate_token(user_id: int,quiz_id: int, n:int = 32, m:int = 5):
@@ -17,7 +14,7 @@ def generate_token(user_id: int,quiz_id: int, n:int = 32, m:int = 5):
     
     quiz = Quiz(user_id, quiz_id, admin_token, player_token)
     
-    MEM_QUIZ[(user_id, quiz_id)] = quiz
+    mem_quiz[(user_id, quiz_id)] = quiz
     
     return {"user_id": user_id,
             "quiz_id": quiz_id,
