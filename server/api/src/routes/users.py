@@ -14,8 +14,8 @@ def create_user(user: userSchemas.UserCreate, db: Session = Depends(get_db)):
     return userCrud.create_user(db=db, user=user)
 
 @router.post("/users/login", response_model=userSchemas.UserLogged)
-async def log_user(user: userSchemas.UserLogin, db: Session = Depends(get_db)):
-    db_user = await oauth2.log_user(db=db, user=user)
+def log_user(user: userSchemas.UserLogin, db: Session = Depends(get_db)):
+    db_user = oauth2.log_user(db=db, user=user)
     return db_user
 
 @router.get("/users/list", response_model=List[userSchemas.User])
