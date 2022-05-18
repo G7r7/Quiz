@@ -33,7 +33,8 @@ logged_routes=["/quiz/"]
 def add_process_time_header(request: Request, call_next):
     if request.url.path in logged_routes:
         token = request.headers.get('authorization')
-        # user = get_current_user(token=token, db=Depends(get_db))
+        db=next(get_db())
+        user = get_current_user(token=token, db=db)
     response = call_next(request)
     return response
 
