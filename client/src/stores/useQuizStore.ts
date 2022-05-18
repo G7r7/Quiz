@@ -1,13 +1,29 @@
 import { defineStore } from "pinia";
-import { inject } from "vue";
+import { DefaultService } from "../providers";
+
+function getRandomInt(max: number) {
+  return Math.floor(Math.random() * max);
+}
 
 const useQuizStore = defineStore("Quiz", {
   state: () => {
     return {
+      userId: 53,
+      io: undefined,
+      name: `GUEST-${getRandomInt(50)}`,
       actualQuestion: 1,
       timer: 0,
       quizName: "tatata",
       quizId: 3320,
+      lobbyToken: "",
+      lobbies: [
+        { lobbyToken: "DREUD224342120", numberPlayers: 10, quizName: "test" },
+        {
+          lobbyToken: "CDU2340542342",
+          numberPlayers: 5,
+          quizName: "C'est un quiz",
+        },
+      ],
       players: [{ userId: 0, isDone: true }],
       question: {
         quiz_id: 0,
@@ -29,7 +45,7 @@ const useQuizStore = defineStore("Quiz", {
   actions: {
     newQuestion(question: any) {
       this.question = question;
-      this.players = this.players.map((player) => ({
+      this.players = this.players.map((player: any) => ({
         ...player,
         isDone: false,
       }));
@@ -39,7 +55,7 @@ const useQuizStore = defineStore("Quiz", {
     },
     userLeft(user: any) {
       this.players = this.players.filter(
-        (player) => player.userId !== user.userId
+        (player: any) => player.userId !== user.userId
       );
     },
     // newMessage(message: any) {
@@ -47,19 +63,18 @@ const useQuizStore = defineStore("Quiz", {
     // },
     userDone(user: any) {
       const i = this.players.findIndex(
-        (player) => player.userId === user.userId
+        (player: any) => player.userId === user.userId
       );
       this.players[i].isDone = true;
     },
     timeOut() {
-      const { io }: any = inject("vuePiniaWS");
       const responseIds = this.question.responses
-        .filter((response) => response.isSelected)
-        .map((response) => response.id);
+        .filter((response: any) => response.isSelected)
+        .map((response: any) => response.id);
       if (this.question.multiple_answers) {
-        io.emit("response", responseIds);
+        this.io.emit("response", responseIds);
       } else {
-        io.emit("response", responseIds[0]);
+        this.io.emit("response", responseIds[0]);
       }
     },
     timer(data: any) {
@@ -67,6 +82,17 @@ const useQuizStore = defineStore("Quiz", {
     },
     score(data: any) {
       this.score = data;
+    },
+    joinLobby(lobbyToken: string) {
+      this.lobbyToken = lobbyToken;
+      this.io.emit("enter_quiz", { token: lobbyToken, name: this.name });
+    },
+    start_quiz() {},
+    send_question(question: any) {},
+    async getUserQuizs() {
+      const quizes = await DefaultService.getQuizsQuizListUserIdGet(
+        this.userId
+      );
     },
   },
 });

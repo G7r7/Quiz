@@ -42,6 +42,7 @@ export default class VuePiniaWS {
 
     if (version >= 3) {
       Vue.provide("vuePiniaWS", this);
+      Vue.config.globalProperties.vuePiniaWS = this;
     } else {
       Vue.prototype.$socket = this.io;
       Vue.prototype.$vuePiniaWS = this;
