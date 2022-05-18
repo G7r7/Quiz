@@ -3,6 +3,7 @@
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import Question from "./components/Question.vue";
 import useQuizStore from "./stores/useQuizStore";
+import FormUser from "./components/FormUser.vue";
 
 const store = useQuizStore();
 </script>
@@ -23,6 +24,7 @@ const store = useQuizStore();
       },
     }"
   />
+  <FormUser :props="{ signin: false }" />
 </template>
 
 <style>
