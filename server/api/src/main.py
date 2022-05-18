@@ -5,6 +5,7 @@ from .routes import users, quiz, token
 from .database import database
 from . import models
 from .utils.constant import app_socket
+from .utils.oauth2 import oauth2_scheme, pwd_context
 
 models.Base.metadata.create_all(bind=database.engine)
 
