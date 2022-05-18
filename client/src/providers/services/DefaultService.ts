@@ -1,8 +1,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Question } from '../models/Question';
+import type { QuestionCreate } from '../models/QuestionCreate';
 import type { Quiz } from '../models/Quiz';
 import type { QuizCreate } from '../models/QuizCreate';
+import type { Response } from '../models/Response';
+import type { ResponseCreate } from '../models/ResponseCreate';
 import type { User } from '../models/User';
 import type { UserCreate } from '../models/UserCreate';
 
@@ -139,6 +143,75 @@ requestBody: QuizCreate,
         return __request(OpenAPI, {
             method: 'POST',
             url: '/quiz/',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Get Questions
+     * @param quizId 
+     * @param skip 
+     * @param limit 
+     * @returns Question Successful Response
+     * @throws ApiError
+     */
+    public static getQuestionsQuestionListQuizIdGet(
+quizId: number,
+skip?: number,
+limit: number = 100,
+): CancelablePromise<Array<Question>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/question/list/{quiz_id}',
+            path: {
+                'quiz_id': quizId,
+            },
+            query: {
+                'skip': skip,
+                'limit': limit,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Create Question
+     * @param requestBody 
+     * @returns Question Successful Response
+     * @throws ApiError
+     */
+    public static createQuestionQuestionPost(
+requestBody: QuestionCreate,
+): CancelablePromise<Question> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/question/',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Create Response
+     * @param requestBody 
+     * @returns Response Successful Response
+     * @throws ApiError
+     */
+    public static createResponseResponsePost(
+requestBody: ResponseCreate,
+): CancelablePromise<Response> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/response/',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

@@ -4,12 +4,13 @@
 import Question from "./components/Question.vue";
 import useQuizStore from "./stores/useQuizStore";
 import FormUser from "./components/FormUser.vue";
+import FormQuiz from "./components/FormQuiz.vue";
 
 const store = useQuizStore();
 </script>
 
 <template>
-  <Question
+  <!-- <Question
     :props="{
       question: {
         quiz_id: 0,
@@ -24,7 +25,8 @@ const store = useQuizStore();
       },
     }"
   />
-  <FormUser :props="{ signin: false }" />
+  <FormUser :props="{ signin: false }" /> -->
+  <FormQuiz />
 </template>
 
 <style>
