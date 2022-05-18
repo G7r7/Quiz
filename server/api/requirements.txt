@@ -28,3 +28,5 @@ websockets==10.3
 numpy==1.22.3
 pytest==7.1.2
 requests==2.27.1
+python-jose==3.3.0
+passlib==1.7.4
