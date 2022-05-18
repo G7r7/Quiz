@@ -1,7 +1,9 @@
 from typing import Union
+from fastapi import Header
 from sqlalchemy.orm import Session
 from .. import models 
 from ..schemas import quiz as quizSchemas
+from ..utils import oauth2
 
 def get_quiz(db: Session, quiz_id: int):
     return db.query(models.Quiz).filter(models.Quiz.id == quiz_id).first()

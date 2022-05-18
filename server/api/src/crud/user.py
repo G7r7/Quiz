@@ -1,17 +1,20 @@
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from .. import models 
 from ..schemas import user as userSchemas
-import hashlib, uuid
+from ..utils import oauth2
 
 def get_user(db: Session, user_id: int) : 
     return db.query(models.User).filter(models.User.id == user_id).first()
+
+def get_user_by_name(db: Session, user_name: str) : 
+    return db.query(models.User).filter(models.User.user_name == user_name).first()
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.User).offset(skip).limit(limit).all()
 
 def create_user(db: Session, user: userSchemas.UserCreate):
-    salt = "salé"
-    hash = hashlib.sha512(user.user_password.encode() + salt.encode()).hexdigest()
+    hash = oauth2.get_password_hash(user.user_password)
     db_user = models.User(user_name=user.user_name, user_password=hash)
     db.add(db_user)
     db.commit()
