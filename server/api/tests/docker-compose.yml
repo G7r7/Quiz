@@ -1,7 +1,7 @@
 version: '3.3'
 
 services:
-  api:
+  test-api:
     env_file:
       - .env
     container_name: test-api
@@ -13,7 +13,7 @@ services:
     volumes:
       - ..:/app
     working_dir: /app
-    command: pytest
+    command: python -m pytest
   db:
     logging:
       driver: none
