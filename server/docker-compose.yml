@@ -1,4 +1,4 @@
-version: '3.3'
+version: "3.3"
 
 services:
   api:
@@ -13,11 +13,11 @@ services:
     ports:
       - 5000:5000
     working_dir: /app
-    # command: ["uvicorn", "main:app", "--host=0.0.0.0", "--port=5000"]
-    command: tail -f /dev/null
+    command: ["uvicorn", "main:app", "--host=0.0.0.0", "--port=5000"]
+    #command: tail -f /dev/null
   db:
     container_name: db
-    image:  postgres:12.3-alpine
+    image: postgres:12.3-alpine
     volumes:
       - ./db/scripts:/docker-entrypoint-initdb.d
       - ./db/data:/var/lib/postgresql/data
