@@ -1,39 +1,9 @@
-from typing import List
-
-from fastapi import Depends, FastAPI, HTTPException
-from sqlalchemy.orm import Session
-
-
-
-import socketio
-
-import json
-import asyncio
-
-import uvicorn
-
-import src.crud as crud
-import src.models as models
-import src.schemas as schemas
-from src.database import SessionLocal, engine
-
-from src.utils.memory_quiz import *
-from src.utils.token import *
-from src.utils.quiz import *
+from src.utils.constant import GlobalVar
 from src.utils.fun import *
-from src.utils.token_collector import TokenCollector
+from src.utils.player import Player
 
-#models.Base.metadata.create_all(bind=engine)
-MEM_QUIZ = MemoryQuiz()
-
-TOKEN_COLLECTOR = TokenCollector(mem=MEM_QUIZ, interval=1)
-#TOKEN_COLLECTOR.start()
-
-app = FastAPI()
-
-sio = socketio.AsyncServer(logger=True, engineio_logger=True, async_mode='asgi', cors_allowed_origins="*")
-app_socket = socketio.ASGIApp(sio)
-
+MEM_QUIZ = GlobalVar.MEM_QUIZ
+sio = GlobalVar.SIO
 
 @sio.event
 async def enter_quiz(sid, data):
@@ -100,61 +70,3 @@ async def receive_response(sid, data):
     player = MEM_QUIZ.get_player_from_sid()
     player.add_response(data)
     
-    
-
-
-@app.post("/token")
-def generate_token(user_id: int,quiz_id: int, n:int = 32, m:int = 5):
-    
-    admin_token = Token(n)
-    player_token = Token(m)
-    
-    quiz = Quiz(user_id, quiz_id, admin_token, player_token)
-    
-    MEM_QUIZ[(user_id, quiz_id)] = quiz
-    
-    return {"user_id": user_id,
-            "quiz_id": quiz_id,
-            "player_token": player_token.get_token(),
-            "admin_token": admin_token.get_token()}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.mount("/", app_socket)
-
-if __name__ == "__main__":
-    try:
-        uvicorn.run("main:app")
-        print("Je suis là")
-    except Exception as e:
-        TOKEN_COLLECTOR.stop()
-        TOKEN_COLLECTOR.join()
-        raise(e)

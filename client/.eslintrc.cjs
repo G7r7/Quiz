@@ -18,6 +18,7 @@ module.exports = {
     "prettier/prettier": ["error", { endOfLine: "auto" }],
     // not needed for vue 3
     "vue/no-multiple-template-root": "off",
+    "vue/multi-word-component-names": "off",
   },
   env: {
     "vue/setup-compiler-macros": true,
