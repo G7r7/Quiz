@@ -1,6 +1,6 @@
-from src.utils.constant import GlobalVar
-from src.utils.fun import *
-from src.utils.player import Player
+from ..utils.constant import GlobalVar
+from ..utils.fun import *
+from ..utils.player import Player
 
 MEM_QUIZ = GlobalVar.MEM_QUIZ
 sio = GlobalVar.SIO

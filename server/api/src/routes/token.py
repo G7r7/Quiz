@@ -1,9 +1,8 @@
 from typing import List
 from fastapi import Depends, APIRouter
-from src.utils.token import *
-from src.utils.quiz import *
-from ..main import MEM_QUIZ
-from src.utils.constant import GlobalVar
+from ..utils.quiz import Quiz
+from ..utils.token import Token
+from ..utils.constant import GlobalVar
 
 MEM_QUIZ = GlobalVar.MEM_QUIZ
 

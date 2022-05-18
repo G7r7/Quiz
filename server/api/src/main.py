@@ -3,7 +3,7 @@ import socketio
 from .routes import users, quiz, token
 from .database import database
 from . import models
-from src.utils.constant import GlobalVar
+from .utils.constant import GlobalVar
 
 app_socket = GlobalVar.APP_SOCKET
 

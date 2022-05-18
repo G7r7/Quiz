@@ -1,5 +1,5 @@
-from src.utils.token_collector import TokenCollector
-from src.utils.memory_quiz import *
+from .token_collector import TokenCollector
+from .memory_quiz import MemoryQuiz
 import socketio
 
 class GlobalVar:
