@@ -12,7 +12,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_name = Column(String(100))
-    user_password = Column(String(100))
+    user_password = Column(String(1024))
 
 
 class Quiz(Base):
