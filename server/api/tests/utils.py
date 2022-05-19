@@ -1,10 +1,19 @@
 import json
 import typing
 from fastapi.testclient import TestClient
+import pytest
 from src.main import app
 from src.models import User
 from src.schemas.quiz import Quiz, QuizCreate
 from src.schemas.user import UserCreate, UserLogged, UserLogin
+from src import models
+from src.database.database import engine
+
+@pytest.fixture()
+def test_db():
+    models.Base.metadata.create_all(bind=engine)
+    yield
+    models.Base.metadata.drop_all(bind=engine)
 
 def create_user() -> User:
     json: UserCreate = UserCreate(user_name="Toto", user_password="titi").json()

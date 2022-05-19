@@ -20,5 +20,5 @@ def get_quizs(user_id: int, skip: int = 0, limit: int = 100, db: Session = Depen
     return items
 
 @router.post("/quiz/", response_model=quizSchemas.Quiz)
-def create_quiz(quiz: quizSchemas.QuizCreate, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+def create_quiz(quiz: quizSchemas.QuizCreate, db: Session = Depends(get_db), user = Depends(get_current_user)):
     return quizCrud.create_quiz(db=db, quiz=quiz)
