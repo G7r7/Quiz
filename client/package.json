@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build && cp docker-compose.prod.yml dist/docker-compose.yml && cp fullchain.pem dist/fullchain.pem && cp privkey.pem dist/privkey.pem && cp nginx.conf dist/nginx.conf",
+    "build": "vue-tsc --noEmit && vite build && cp docker-compose.prod.yml dist/docker-compose.yml && cp fullchain.pem dist/fullchain.pem && cp privKey.pem dist/privKey.pem && cp nginx.conf dist/nginx.conf",
     "preview": "vite preview",
     "lint": "eslint --ext .ts,.vue --ignore-path .gitignore --fix src",
     "format": "prettier .  --write",
