@@ -1,6 +1,8 @@
 from typing import List
 from fastapi import Depends, APIRouter
 from sqlalchemy.orm import Session
+from ..models import User
+from ..utils.oauth2 import get_current_user
 from ..database.get_db import get_db
 from ..schemas import quiz as quizSchemas
 from ..crud import quiz as quizCrud
@@ -18,5 +20,5 @@ def get_quizs(user_id: int, skip: int = 0, limit: int = 100, db: Session = Depen
     return items
 
 @router.post("/quiz/", response_model=quizSchemas.Quiz)
-def create_quiz(quiz: quizSchemas.QuizCreate, db: Session = Depends(get_db)):
+def create_quiz(quiz: quizSchemas.QuizCreate, db: Session = Depends(get_db), user = Depends(get_current_user)):
     return quizCrud.create_quiz(db=db, quiz=quiz)
