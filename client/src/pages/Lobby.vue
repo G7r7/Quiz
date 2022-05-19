@@ -12,6 +12,11 @@ export default defineComponent({
       this.$router.push({ path: `/lobby/${this.QuizStore.lobbyToken}` });
     },
   },
+  methods: {
+    createRoom() {
+      this.$router.push("/lobby/create");
+    },
+  },
 });
 </script>
 
@@ -44,6 +49,8 @@ export default defineComponent({
         </template>
       </v-list-item>
     </v-list>
-    <v-btn color="success">Créer une room</v-btn>
+    <v-btn v-if="QuizStore.isSignedIn" color="success" @click="createRoom"
+      >Créer une room</v-btn
+    >
   </v-card>
 </template>

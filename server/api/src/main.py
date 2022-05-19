@@ -25,4 +25,4 @@ app.include_router(question.router)
 app.include_router(response.router)
 app.include_router(token.router)
 
-app.mount("/", app_socket)
+app.mount("/ws", app_socket)
