@@ -3,16 +3,23 @@
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import { inject } from "vue";
 import { useRouter } from "vue-router";
-import { OpenAPI } from "./providers";
+import { DefaultService, OpenAPI } from "./providers";
 import useQuizStore from "./stores/useQuizStore";
 const vuePiniaWS: any = inject("vuePiniaWS");
 vuePiniaWS.mount();
+OpenAPI.BASE = import.meta.env.VITE_API_ENDPOINT;
 
 const store = useQuizStore();
 const token = window.localStorage.getItem("TOKEN");
+
 if (token) {
   store.isSignedIn = true;
   OpenAPI.TOKEN = token;
+  (async () => {
+    const me = await DefaultService.userMeUsersMePost();
+    store.name = me.user_name;
+    store.userId = me.id;
+  })();
 }
 store.io = vuePiniaWS.io;
 const router = useRouter();

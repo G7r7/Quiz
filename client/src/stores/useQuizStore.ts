@@ -11,6 +11,20 @@ const useQuizStore = defineStore("Quiz", {
       isSignedIn: false,
       userId: 53,
       io: undefined,
+      isRoomAdmin: false,
+      adminToken: undefined,
+      userQuizes: [
+        {
+          quiz_name: "TestQuiz",
+          date_creation: "2022-05-19",
+          id: 7,
+        },
+        {
+          quiz_name: "testquizzzz",
+          date_creation: "2022-05-19",
+          id: 57,
+        },
+      ],
       name: `GUEST-${getRandomInt(50)}`,
       actualQuestion: 1,
       timer: 0,
@@ -25,7 +39,7 @@ const useQuizStore = defineStore("Quiz", {
           quizName: "C'est un quiz",
         },
       ],
-      players: [{ userId: 0, isDone: true }],
+      players: [{ userId: 0, isDone: true, name: "borehurc" }],
       question: {
         quiz_id: 0,
         id: 0,
@@ -95,6 +109,7 @@ const useQuizStore = defineStore("Quiz", {
         this.userId
       );
     },
+    launchGame() {},
   },
 });
 
