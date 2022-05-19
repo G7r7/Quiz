@@ -13,8 +13,8 @@ services:
     volumes:
       - ..:/app
     working_dir: /app
-    # command: python -m pytest
-    command: tail -f /dev/null
+    command: python -m pytest
+    # command: tail -f /dev/null
   test-db:
     logging:
       driver: none
