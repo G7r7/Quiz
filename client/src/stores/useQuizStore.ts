@@ -8,6 +8,7 @@ function getRandomInt(max: number) {
 const useQuizStore = defineStore("Quiz", {
   state: () => {
     return {
+      isSignedIn: false,
       userId: 53,
       io: undefined,
       name: `GUEST-${getRandomInt(50)}`,
