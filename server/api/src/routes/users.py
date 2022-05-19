@@ -2,7 +2,8 @@ from typing import List
 from fastapi import Depends, APIRouter, HTTPException
 from sqlalchemy.orm import Session
 
-from src.utils import oauth2
+from ..utils import oauth2
+from ..utils import oauth2
 from ..database.get_db import get_db
 from ..schemas import user as userSchemas
 from ..crud import user as userCrud
@@ -29,3 +30,8 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
+
+@router.post("/users/me", response_model=userSchemas.User)
+def user_me(db: Session = Depends(get_db), user = Depends(oauth2.get_current_user)):
+    return user
+
