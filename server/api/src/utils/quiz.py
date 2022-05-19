@@ -21,6 +21,13 @@ class Quiz:
     def add_player(self, p: Player):
         self.players.add(p)
         
+    def get_winners(self):
+        winner  = Player("", "")
+        for player in self.players:
+            if player.score >= winner.score:
+                winner = player
+        return player
+        
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, Quiz):
             return self.id == __o.id

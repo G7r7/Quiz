@@ -1,9 +1,19 @@
+from pytest import skip
 from ..utils.constant import mem_quiz, sio
 from ..utils.fun import *
 from ..utils.player import Player
 from ..database.get_db import get_db
 from ..crud import question as questionCrud
 from ..crud import response as responseCrud
+
+@sio.event
+async def new_room_added(sid, data):
+    await sio.emit("new_room_added", data=data)
+    
+@sio.event
+async def connect(sid, environ, auth):
+    await sio.emit("all_rooms", {"data": {i : {"player_token": player_token} for i, player_token in zip(range(len(mem_quiz.quizs)), mem_quiz.player_tokens())}})
+
 
 @sio.event
 async def enter_quiz(sid, data):
@@ -31,8 +41,11 @@ async def enter_quiz(sid, data):
         await sio.emit("user_already_joined", to=sid)
     else:
         quiz.add_player(player)
+        
         sio.enter_room(sid, recieved_token)
+
         await sio.emit("quizjoin", to=sid)
+        await sio.emit("new_player_joined", to=recieved_token, skip=sid)
 
             
 
@@ -55,7 +68,7 @@ async def start_quiz(sid, data):
         quiz = mem_quiz[recieved_player_token]
         mem_quiz.play_quiz(quiz)
         
-        await sio.emit("start_quiz", room=recieved_admin_tokens, skip_sid=sid)
+        await sio.emit("start_quiz", room=recieved_player_token, skip_sid=sid)
         
         db =  next(get_db())
         
@@ -66,16 +79,33 @@ async def start_quiz(sid, data):
             
             list_response = responseCrud.get_responses(db, question.id)
             data_to_send, response = create_data_qr(question, list_response)
-            await sio.emit("send_question", room=recieved_admin_tokens, skip_sid=sid, data=data_to_send)
+            await sio.emit("send_question", {"data": data_to_send}, room=recieved_player_token, skip_sid=sid)
             
             
             # Sleep
             await sio.sleep(10)
             # Calculate score of each player
+            await sio.emit("stop_sending", room=recieved_player_token, skip_sid=sid)
             
-            # Pass to next question
+            correct_response = get_correct_responses(response)
+            
+            for player in quiz.players:
+                calculate_score_player(player, correct_response)
+                
+            await sio.emit("correct_response", room=recieved_player_token, skip_sid=sid)
+            
+            await sio.sleep(5)
+            
+            await sio.emit("next_question", room=recieved_player_token, skip_sid=sid)
             
         # Broadcast Winner
+        
+        winner = quiz.get_winners()
+        
+        await sio.emit("winner",{"name": winner.name}, room=recieved_player_token, skip_sid=sid)
+        
+        await sio.sleep(5)
+        
         # Clean infos in mem_quiz
         mem_quiz.end_quiz(quiz)
     
