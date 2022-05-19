@@ -76,16 +76,15 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
         expires = payload.get("exp")
         if username is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = get_user_by_name(db, token_data.username)
+    user = get_user_by_name(db, username)
     if user is None:
         raise credentials_exception
         # check token expiration
     if expires is None:
         raise credentials_exception
-    if datetime.utcnow() > token_data.expires:
+    if datetime.utcnow().timestamp() > expires:
         raise credentials_exception
     return user
 
