@@ -11,16 +11,17 @@ import VuePiniaWS from "./plugins/VuePiniaWS";
 import { createPinia } from "pinia";
 import useQuizStore from "./stores/useQuizStore";
 import { createRouter, createWebHashHistory } from "vue-router";
-import HelloWorld from "./components/HelloWorld.vue";
 import Lobby from "./pages/Lobby.vue";
+import FormUser from "./components/FormUser.vue";
+import FormQuiz from "./components/FormQuiz.vue";
 
 const routes = [
   { path: "/", component: Lobby },
-  { path: "/signin", component: { template: "<div>Signin</div>" } },
-  { path: "/signup", component: { template: "<div>Signup</div>" } },
+  { path: "/signin", component: FormUser },
+  { path: "/signup", component: FormUser },
   { path: "/lobby/:id", component: { template: "<div>Lobby</div>" } },
   { path: "/quiz/:id", component: { template: "<div>Quiz</div>" } },
-  { path: "/quiz/create", component: { template: "<div>Create Quiz</div>" } },
+  { path: "/quiz/create", component: FormQuiz },
   { path: "/quiz/update", component: { template: "<div>Signin</div>" } },
 ];
 
@@ -50,8 +51,9 @@ app.use(vuetify);
 app.use(createPinia());
 app.use(
   new VuePiniaWS({
-    connection: "http://localhost:7000",
+    connection: "http://localhost:5000",
     pinia: { store: useQuizStore, actionPrefix: "" },
+    options: { path: "/ws/socket.io/" },
   })
 );
 app.mount("#app");

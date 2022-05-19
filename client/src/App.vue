@@ -2,16 +2,36 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import { inject } from "vue";
-import { useRoute } from "vue-router";
-import Question from "./components/Question.vue";
+import { useRouter } from "vue-router";
+import { OpenAPI } from "./providers";
 import useQuizStore from "./stores/useQuizStore";
 const vuePiniaWS: any = inject("vuePiniaWS");
 vuePiniaWS.mount();
-import FormUser from "./components/FormUser.vue";
-import FormQuiz from "./components/FormQuiz.vue";
 
 const store = useQuizStore();
+const token = window.localStorage.getItem("TOKEN");
+if (token) {
+  store.isSignedIn = true;
+  OpenAPI.TOKEN = token;
+}
 store.io = vuePiniaWS.io;
+const router = useRouter();
+
+const signin = () => {
+  router.push("/signin");
+};
+
+const signup = () => {
+  router.push("/signup");
+};
+
+const lobby = () => {
+  router.push("/");
+};
+
+const createQuiz = () => {
+  router.push("/quiz/create");
+};
 </script>
 
 <template>
@@ -33,23 +53,27 @@ store.io = vuePiniaWS.io;
   <v-card class="mx-auto">
     <v-layout>
       <v-app-bar color="primary" density="compact">
-        <template v-slot:prepend>
-          <v-app-bar-nav-icon></v-app-bar-nav-icon>
-        </template>
-        <v-app-bar-title>Quizie</v-app-bar-title>
+        <v-app-bar-title @click="lobby">Quizie</v-app-bar-title>
         <template v-slot:append>
-          <v-btn icon="mdi-dots-vertical"></v-btn>
+          <v-btn
+            v-if="!store.isSignedIn"
+            icon="mdi-login"
+            @click="signin"
+          ></v-btn>
+          <v-btn
+            v-if="!store.isSignedIn"
+            icon="mdi-account-plus"
+            @click="signup"
+          ></v-btn>
+          <v-btn v-if="store.isSignedIn" @click="createQuiz"
+            >Créer un Quiz</v-btn
+          >
         </template>
       </v-app-bar>
 
       <v-main>
         <v-container fluid>
-          <v-row dense>
-            <!-- <v-col v-for="n in 8" :key="n" cols="3">
-              <v-sheet color="grey-lighten-2" height="96"></v-sheet>
-            </v-col> -->
-            <router-view></router-view>
-          </v-row>
+          <router-view></router-view>
         </v-container>
       </v-main>
     </v-layout>

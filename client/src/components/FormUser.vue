@@ -1,12 +1,16 @@
 ﻿<script setup lang="ts">
 import { ref } from "vue";
 import { DefaultService } from "../providers";
+import { useRoute, useRouter } from "vue-router";
+import { computed } from "vue";
+import useQuizStore from "../stores/useQuizStore";
+import { OpenAPI } from "../providers";
+const route = useRoute();
+const router = useRouter();
 
-interface formUserProps {
-  signin: boolean;
-}
-
-defineProps<{ props: formUserProps }>();
+const isSignin = computed(() => {
+  return route.path === "/signin";
+});
 
 const user = ref({ name: "", password: "" });
 const nameRules = [
@@ -19,15 +23,44 @@ const passwordRules = [
 ];
 const valid = ref(true);
 const showPass = ref(false);
+const store = useQuizStore();
 async function handleValidation() {
-  const newUser = await DefaultService.createUserUsersPost({
-    user_name: user.value.name,
-    user_password: user.value.password,
-  });
+  try {
+    const newUser = await DefaultService.createUserUsersPost({
+      user_name: user.value.name,
+      user_password: user.value.password,
+    });
+
+    const log = await DefaultService.logUserUsersLoginPost({
+      user_name: user.value.name,
+      user_password: user.value.password,
+    });
+    OpenAPI.TOKEN = log.user_token;
+    window.localStorage.setItem("TOKEN", log.user_token);
+    store.userId = newUser.id;
+    store.isSignedIn = true;
+    store.name = newUser.user_name;
+    router.push("/");
+  } catch (err) {
+    console.error("Failed to create user !");
+  }
 }
 
 async function handleConnexion() {
-  //
+  try {
+    const log = await DefaultService.logUserUsersLoginPost({
+      user_name: user.value.name,
+      user_password: user.value.password,
+    });
+    OpenAPI.TOKEN = log.user_token;
+    window.localStorage.setItem("TOKEN", log.user_token);
+    store.userId = log.id;
+    store.isSignedIn = true;
+    store.name = log.user_name;
+    router.push("/");
+  } catch (err) {
+    console.error("Failed to log in.");
+  }
 }
 </script>
 
@@ -58,7 +91,7 @@ async function handleConnexion() {
       <v-row justify="end">
         <v-col md="8">
           <v-btn
-            v-if="props.signin"
+            v-if="isSignin"
             :disabled="!valid"
             color="success"
             size="large"

@@ -13,12 +13,6 @@ from .utils.oauth2 import oauth2_scheme, pwd_context, get_current_user
 models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
-app.include_router(users.router)
-app.include_router(quiz.router)
-app.include_router(question.router)
-app.include_router(response.router)
-app.include_router(token.router)
-
 app.add_middleware(
   CORSMiddleware,
   allow_origins=['*'],
@@ -26,16 +20,14 @@ app.add_middleware(
   allow_methods=['*'],
   allow_headers=['*'],
 )
+app.include_router(users.router)
+app.include_router(quiz.router)
+app.include_router(question.router)
+app.include_router(response.router)
+app.include_router(token.router)
+
 
 logged_routes=["/quiz/"]
 
-@app.middleware("http")
-def add_process_time_header(request: Request, call_next):
-    if request.url.path in logged_routes:
-        token = request.headers.get('authorization')
-        db=next(get_db())
-        user = get_current_user(token=token, db=db)
-    response = call_next(request)
-    return response
 
-app.mount("/", app_socket)
+app.mount("/ws", app_socket)

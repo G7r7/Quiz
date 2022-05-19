@@ -15,6 +15,8 @@ export type { Response } from './models/Response';
 export type { ResponseCreate } from './models/ResponseCreate';
 export type { User } from './models/User';
 export type { UserCreate } from './models/UserCreate';
+export type { UserLogged } from './models/UserLogged';
+export type { UserLogin } from './models/UserLogin';
 export type { ValidationError } from './models/ValidationError';
 
 export { DefaultService } from './services/DefaultService';
