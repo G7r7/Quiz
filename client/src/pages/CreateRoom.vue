@@ -25,6 +25,8 @@ const validate = async () => {
   store.lobbyToken = response.player_token;
   store.isRoomAdmin = true;
   store.adminToken = response.admin_token;
+  store.quizName = store.userQuizes[index].quiz_name;
+  store.addRoom(store.lobbyToken);
   router.push(`/lobby/${store.lobbyToken}`);
 };
 const items = computed(() => {

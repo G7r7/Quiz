@@ -32,7 +32,7 @@ export default defineComponent({
       <v-list-subheader inset>Liste des lobbies</v-list-subheader>
 
       <v-list-item
-        v-for="lobby in QuizStore.lobbies"
+        v-for="lobby in (QuizStore.lobbies as any)"
         :key="lobby.lobbyToken"
         :title="lobby.quizName"
         :subtitle="`${lobby.numberPlayers} joueurs || Code d'invitation : ${lobby.lobbyToken}`"

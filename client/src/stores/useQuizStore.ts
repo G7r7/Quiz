@@ -31,14 +31,7 @@ const useQuizStore = defineStore("Quiz", {
       quizName: "tatata",
       quizId: 3320,
       lobbyToken: "",
-      lobbies: [
-        { lobbyToken: "DREUD224342120", numberPlayers: 10, quizName: "test" },
-        {
-          lobbyToken: "CDU2340542342",
-          numberPlayers: 5,
-          quizName: "C'est un quiz",
-        },
-      ],
+      lobbies: [],
       players: [{ userId: 0, isDone: true, name: "borehurc" }],
       question: {
         quiz_id: 0,
@@ -104,12 +97,40 @@ const useQuizStore = defineStore("Quiz", {
     },
     start_quiz() {},
     send_question(question: any) {},
-    async getUserQuizs() {
-      const quizes = await DefaultService.getQuizsQuizListUserIdGet(
-        this.userId
-      );
+    launchGame() {
+      this.io.emit("enter_quiz", {
+        player_token: this.lobbyToken,
+        name: this.name,
+      });
+      this.io.emit("start_quiz", {
+        player_token: this.lobbyToken,
+        admin_token: this.adminToken,
+      });
     },
-    launchGame() {},
+    addRoom(lobbyToken: string) {
+      this.io.emit("new_room_added", {
+        player_token: lobbyToken,
+        quiz_name: this.quizName,
+        number_players: 1,
+      });
+    },
+    new_room_added(data: any) {
+      this.lobbies.push({
+        lobbyToken: data.player_token,
+        quizName: data.quiz_name,
+        numberPlayers: data.number_players,
+      });
+    },
+    all_rooms(data: any) {
+      const length = Object.keys(data.data).length;
+      for (let i = 0; i < length; i++) {
+        this.lobbies.push({
+          player_token: data.data[i].player_token,
+          numberPlayers: data.data[i].number_players,
+          quizName: data.data[i].quiz_name,
+        });
+      }
+    },
   },
 });
 

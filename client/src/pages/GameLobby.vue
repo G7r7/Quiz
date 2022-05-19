@@ -19,5 +19,7 @@ const path = ref(window.location.href);
     >
     </v-list-item>
   </v-list>
-  <v-btn v-if="store.isRoomAdmin" @click="store.launchGame">Launch Game</v-btn>
+  <v-btn color="primary" v-if="store.isRoomAdmin" @click="store.launchGame"
+    >Launch Game</v-btn
+  >
 </template>

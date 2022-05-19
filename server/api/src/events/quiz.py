@@ -16,7 +16,7 @@ async def connect(sid, environ, auth):
     
     data = dict()
     i = 0
-    for quiz in mem_quiz.quizs.value():
+    for quiz in mem_quiz.quizs.values():
         data[i] = {"player_token": quiz.player_token, "quiz_name": quiz.name}
     await sio.emit("all_rooms", {"data": {i : {"player_token": player_token, "quiz_name": mem_quiz} for i, player_token in zip(range(len(mem_quiz.quizs)), mem_quiz.player_tokens())}})
 
@@ -51,7 +51,7 @@ async def enter_quiz(sid, data):
         sio.enter_room(sid, recieved_token)
 
         await sio.emit("quizjoin", to=sid)
-        await sio.emit("new_player_joined", to=recieved_token, skip=sid)
+        await sio.emit("new_player_joined", to=recieved_token)
 
             
 
@@ -74,7 +74,7 @@ async def start_quiz(sid, data):
         quiz = mem_quiz[recieved_player_token]
         mem_quiz.play_quiz(quiz)
         
-        await sio.emit("start_quiz", room=recieved_player_token, skip_sid=sid)
+        await sio.emit("start_quiz", room=recieved_player_token)
         
         db =  next(get_db())
         

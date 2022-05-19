@@ -8,9 +8,6 @@ interface QuestionProps {
   question: Question;
 }
 
-const $vuePiniaWS: any = inject("vuePiniaWS");
-$vuePiniaWS.mount();
-$vuePiniaWS.io.emit("hello");
 defineProps<{ props: QuestionProps }>();
 
 const selected = ref([]);
