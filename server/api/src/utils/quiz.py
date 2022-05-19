@@ -3,13 +3,14 @@ from src.utils.player import Player
 
 class Quiz:
     
-    def __init__(self, user_id: int, quiz_id: int, admin_token: Token, player_token: Token) -> None:
+    def __init__(self, user_id: int, quiz_id: int, admin_token: Token, player_token: Token, name: str) -> None:
         self.admin = user_id
         self.players = set()
         self.id = quiz_id
         self.admin_token = admin_token
         self.player_token = player_token
         self.open_to_register = True
+        self.name = name
         
     
     def get_age_quiz(self):

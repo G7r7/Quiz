@@ -10,15 +10,21 @@ from ..crud import response as responseCrud
 async def new_room_added(sid, data):
     await sio.emit("new_room_added", data=data)
     
+    
 @sio.event
 async def connect(sid, environ, auth):
-    await sio.emit("all_rooms", {"data": {i : {"player_token": player_token} for i, player_token in zip(range(len(mem_quiz.quizs)), mem_quiz.player_tokens())}})
+    
+    data = dict()
+    i = 0
+    for quiz in mem_quiz.quizs.value():
+        data[i] = {"player_token": quiz.player_token, "quiz_name": quiz.name}
+    await sio.emit("all_rooms", {"data": {i : {"player_token": player_token, "quiz_name": mem_quiz} for i, player_token in zip(range(len(mem_quiz.quizs)), mem_quiz.player_tokens())}})
 
 
 @sio.event
 async def enter_quiz(sid, data):
     
-    recieved_token = await parse_token(sio, sid, data, list_tokens=mem_quiz.player_tokens())
+    recieved_token = await parse_token(sio, sid, data, list_tokens=mem_quiz.player_tokens(), token="player_token")
     
     if recieved_token is None:
         return
