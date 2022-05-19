@@ -24,7 +24,7 @@ class Quiz:
     def get_winners(self):
         winner  = Player("", "")
         for player in self.players:
-            if player.score >= winner:
+            if player.score >= winner.score:
                 winner = player
         return player
         
