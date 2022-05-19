@@ -2,10 +2,13 @@
 import { ref } from "vue";
 import { Quiz } from "../model/Quiz";
 import { DefaultService } from "../providers";
+import useQuizStore from "../stores/useQuizStore";
+
+const store = useQuizStore();
 
 let quiz = ref<Quiz>({
   name: "",
-  user_id: 0,
+  user_id: store.userId,
   date_creation: new Date(Date.now()),
   questions: [],
 });
@@ -24,7 +27,7 @@ async function handleSubmit(validate: any) {
   if (validation.valid) {
     const newQuiz = await DefaultService.createQuizQuizPost({
       quiz_name: quiz.value.name,
-      user_id: 1,
+      user_id: store.userId,
       date_creation: [
         quiz.value.date_creation.getFullYear(),
         quiz.value.date_creation.getMonth(),
