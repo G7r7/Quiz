@@ -14,6 +14,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import Lobby from "./pages/Lobby.vue";
 import FormUser from "./components/FormUser.vue";
 import FormQuiz from "./components/FormQuiz.vue";
+import EndQuiz from "./components/EndQuiz.vue";
 
 const routes = [
   { path: "/", component: Lobby },
@@ -23,6 +24,7 @@ const routes = [
   { path: "/quiz/:id", component: { template: "<div>Quiz</div>" } },
   { path: "/quiz/create", component: FormQuiz },
   { path: "/quiz/update", component: { template: "<div>Signin</div>" } },
+  { path: "/quiz/end", component: EndQuiz },
 ];
 
 const router = createRouter({
