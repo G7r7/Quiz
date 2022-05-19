@@ -15,7 +15,7 @@ const validate = () => {};
     <v-select
       v-model="select"
       :items="items"
-      :rules="[(v) => !!v || 'Item is required']"
+      :rules="[(v:any) => !!v || 'Item is required']"
       label="Item"
       required
     ></v-select>

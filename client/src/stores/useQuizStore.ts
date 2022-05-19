@@ -73,9 +73,9 @@ const useQuizStore = defineStore("Quiz", {
         .filter((response: any) => response.isSelected)
         .map((response: any) => response.id);
       if (this.question.multiple_answers) {
-        this.io.emit("response", responseIds);
+        this.io && (this.io as any).emit("response", responseIds);
       } else {
-        this.io.emit("response", responseIds[0]);
+        this.io && (this.io as any).emit("response", responseIds[0]);
       }
     },
     timer(data: any) {
@@ -86,7 +86,11 @@ const useQuizStore = defineStore("Quiz", {
     },
     joinLobby(lobbyToken: string) {
       this.lobbyToken = lobbyToken;
-      this.io.emit("enter_quiz", { token: lobbyToken, name: this.name });
+      this.io &&
+        (this.io as any).emit("enter_quiz", {
+          token: lobbyToken,
+          name: this.name,
+        });
     },
     start_quiz() {},
     send_question(question: any) {},
