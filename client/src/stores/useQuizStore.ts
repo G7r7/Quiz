@@ -122,12 +122,12 @@ const useQuizStore = defineStore("Quiz", {
       });
     },
     all_rooms(data: any) {
-      const length = Object.keys(data.data).length;
+      const length = Object.keys(data).length;
       for (let i = 0; i < length; i++) {
         this.lobbies.push({
-          player_token: data.data[i].player_token,
-          numberPlayers: data.data[i].number_players,
-          quizName: data.data[i].quiz_name,
+          player_token: data[i].player_token,
+          numberPlayers: data[i].number_players,
+          quizName: data[i].quiz_name,
         });
       }
     },

@@ -22,6 +22,7 @@ def generate_token(user_id: int,quiz_id: int, n:int = 32, m:int = 5, db: Session
     player_token = Token(m)
     
     list_quiz = quizCrud.get_quiz(db, quiz_id)
+
     
     quiz = Quiz(user_id, quiz_id, admin_token, player_token, name=list_quiz.quiz_name)
     

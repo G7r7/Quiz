@@ -17,13 +17,8 @@ async def connect(sid, environ, auth):
     data = dict()
     i = 0
     for quiz in mem_quiz.quizs.values():
-<<<<<<< HEAD
-        data[i] = {"player_token": quiz.player_token, "quiz_name": quiz.name}
-    await sio.emit("all_rooms", {"data": {i : {"player_token": player_token, "quiz_name": mem_quiz} for i, player_token in zip(range(len(mem_quiz.quizs)), mem_quiz.player_tokens())}})
-=======
-        data[i] = {"player_token": quiz.player_token, "quiz_name": quiz.name, "number_players": len(quiz.players)}
+        data[i] = {"player_token": quiz.player_token.get_token(), "quiz_name": quiz.name, "number_players": len(quiz.players)}
     await sio.emit("all_rooms", data, to=sid)
->>>>>>> e4d24280473523ac7960c2254c8bbe89d2200f57
 
 
 @sio.event
@@ -85,40 +80,47 @@ async def start_quiz(sid, data):
         
         quiz_id = quiz.id
         list_questions = questionCrud.get_questions(db, quiz_id)
+
         
         for question in list_questions:
+
+            await sio.emit("next_question", to=recieved_player_token)
+            await sio.sleep(5)
             
             list_response = responseCrud.get_responses(db, question.id)
+            
             data_to_send, response = create_data_qr(question, list_response)
-            await sio.emit("send_question", {"data": data_to_send}, room=recieved_player_token, skip_sid=sid)
+            #await sio.emit("send_question", {"data": data_to_send}, room=recieved_player_token)
+
+            await sio.emit("send_question", {"data": data_to_send},to=recieved_player_token)
             
             
             # Sleep
             await sio.sleep(10)
             # Calculate score of each player
-            await sio.emit("stop_sending", room=recieved_player_token, skip_sid=sid)
+            await sio.emit("stop_sending", room=recieved_player_token)
             
             correct_response = get_correct_responses(response)
             
             for player in quiz.players:
                 calculate_score_player(player, correct_response)
+
+            response_to_send = {i: response["id"] for response, i in zip(correct_response, range(len(correct_response)))}
                 
-            await sio.emit("correct_response", room=recieved_player_token, skip_sid=sid)
-            
-            await sio.sleep(5)
-            
-            await sio.emit("next_question", room=recieved_player_token, skip_sid=sid)
+            await sio.emit("correct_response", response_to_send,to=recieved_player_token)
             
         # Broadcast Winner
         
         winner = quiz.get_winners()
         
-        await sio.emit("winner",{"name": winner.name}, room=recieved_player_token, skip_sid=sid)
+        await sio.emit("winner",{"name": winner.name}, room=recieved_player_token)
         
         await sio.sleep(5)
         
         # Clean infos in mem_quiz
         mem_quiz.end_quiz(quiz)
+
+        await sio.close_room(recieved_player_token)
     
         
 
