@@ -4,9 +4,9 @@ services:
   web:
     image: nginx:alpine
     volumes:
+      - .:/www/
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./fullchain.pem:/ssl/fullchain.pem
-      - ./privKey.pem:/ssl/privKey.pem
+
     ports:
       - "80:80"
       - "443:443"
