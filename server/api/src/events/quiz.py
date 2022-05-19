@@ -17,8 +17,13 @@ async def connect(sid, environ, auth):
     data = dict()
     i = 0
     for quiz in mem_quiz.quizs.values():
+<<<<<<< HEAD
         data[i] = {"player_token": quiz.player_token, "quiz_name": quiz.name}
     await sio.emit("all_rooms", {"data": {i : {"player_token": player_token, "quiz_name": mem_quiz} for i, player_token in zip(range(len(mem_quiz.quizs)), mem_quiz.player_tokens())}})
+=======
+        data[i] = {"player_token": quiz.player_token, "quiz_name": quiz.name, "number_players": len(quiz.players)}
+    await sio.emit("all_rooms", data, to=sid)
+>>>>>>> e4d24280473523ac7960c2254c8bbe89d2200f57
 
 
 @sio.event

@@ -34,7 +34,7 @@ def create_data_qr(question: questionSchema.Question, responses: List[responseSc
     return res, responses_server
 
 def get_correct_responses(responses_server):
-    return [response["id"] for response in responses_server.values() if response["is_true"]]
+    return [response for response in responses_server["responses_server"] if response["is_true"]]
 
 def calculate_score_player(player: Player, correct_response):
     player_response = player.current_question_responses[-1]
