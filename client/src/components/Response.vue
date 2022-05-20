@@ -1,21 +1,32 @@
 ﻿<script setup lang="ts">
+import { computed } from "vue";
 import { QuizResponse } from "../model/QuizResponse";
+import useQuizStore from "../stores/useQuizStore";
 
 interface ResponseProps {
   response: QuizResponse;
   multipleResponse: boolean;
   selected: string[];
 }
+const store = useQuizStore();
+const props2 = defineProps<{ props: ResponseProps }>();
+const isFinished = computed(() => store.correctResponse.length > 0);
+const correct = computed(() =>
+  store.correctResponse.includes(props2.props.response.id)
+);
+const color = computed(() =>
+  isFinished.value ? (correct.value ? "success" : "error") : "primary"
+);
 
-defineProps<{ props: ResponseProps }>();
+const style = computed(() =>
+  isFinished.value ? (correct.value ? "green" : "red") : "black"
+);
 </script>
 
 <template>
-  <v-checkbox
-    v-if="props.multipleResponse"
-    :v-model="props.selected"
-    :label="props.response.content"
-    :value="props.response.id"
-  />
-  <v-radio v-else :label="props.response.content" :value="props.response.id" />
+  <v-radio :color="color" :value="props.response.id">
+    <template #label>
+      <span :style="`color : ${style};`">{{ props.response.content }}</span>
+    </template>
+  </v-radio>
 </template>

@@ -1,21 +1,27 @@
 <script setup lang="ts">
 import useQuizStore from "../stores/useQuizStore";
-import { useRoute } from "vue-router";
-import { ref } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { ref, watch } from "vue";
+import { computed, reactive } from "@vue/reactivity";
 const store = useQuizStore();
 const route = useRoute();
+const router = useRouter();
 const path = ref(window.location.href);
+if (!store.isGameJoined) {
+  store.isGameJoined = true;
+  store.joinLobby(route.params.id as string);
+}
 </script>
 
 <template>
   <a :href="route.path">{{ path }}</a>
-  <v-list lines="one">
+  <v-list lines="three">
     <v-list-subheader inset>Liste des joueurs</v-list-subheader>
 
     <v-list-item
-      v-for="player in store.players"
-      :key="player.userId"
-      :title="player.name"
+      v-for="player in (store.players as any)"
+      :key="player"
+      :title="player"
     >
     </v-list-item>
   </v-list>

@@ -9,6 +9,8 @@ export default defineComponent({
   },
   sockets: {
     quizjoin() {
+      this.QuizStore.isGameJoined = true;
+      this.QuizStore.players = [];
       this.$router.push({ path: `/lobby/${this.QuizStore.lobbyToken}` });
     },
   },

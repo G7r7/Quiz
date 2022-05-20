@@ -8,7 +8,13 @@
             "name": "Python: Pytest",
             "type": "python",
             "request": "launch",
-            "module": "pytest",
+            "module": "uvicorn",
+            "args": [
+                "src.main:app",
+                "--host=0.0.0.0",
+                "--port=5000"
+            ],
+            "cwd": "/app",
             "jinja": true,
             "justMyCode": true
         }
