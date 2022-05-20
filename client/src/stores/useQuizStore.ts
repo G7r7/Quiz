@@ -35,7 +35,7 @@ const useQuizStore = defineStore("Quiz", {
       quizId: 3320,
       lobbyToken: "",
       lobbies: new Array<any>(),
-      players: new Array<string>(),
+      players: new Array<any>(),
       question: <any>{},
       correctResponse: <any>{},
     };
@@ -86,16 +86,19 @@ const useQuizStore = defineStore("Quiz", {
     joinLobby(lobbyToken: string) {
       this.isGameJoined = true;
       this.lobbyToken = lobbyToken;
-      this.io.emit("enter_quiz", { player_token: lobbyToken, name: this.name });
+      (this.io as any).emit("enter_quiz", {
+        player_token: lobbyToken,
+        name: this.name,
+      });
     },
     launchGame() {
-      this.io.emit("start_quiz", {
+      (this.io as any).emit("start_quiz", {
         player_token: this.lobbyToken,
         admin_token: this.adminToken,
       });
     },
     addRoom(lobbyToken: string) {
-      this.io.emit("new_room_added", {
+      (this.io as any).emit("new_room_added", {
         player_token: lobbyToken,
         quiz_name: this.quizName,
         number_players: 1,
@@ -160,7 +163,7 @@ const useQuizStore = defineStore("Quiz", {
       // }
     },
     respondQuestion(selected: number) {
-      this.io.emit("receive_response", selected);
+      (this.io as any).emit("receive_response", selected);
     },
     stop_sending() {
       this.hasResponded = true;
