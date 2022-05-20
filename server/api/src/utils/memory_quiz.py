@@ -65,3 +65,14 @@ class MemoryQuiz:
     
     def get_player_from_sid(self, sid):
         return self.current_playing[sid]
+    
+    def remove_player(self, sid):
+        try:
+            player = self.get_player_from_sid(sid)
+            name = player.name
+            quiz = self[sid]
+            quiz.remove_player(player)
+            del self.current_playing[sid]
+        except KeyError:
+            return ""
+        return name

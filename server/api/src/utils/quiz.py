@@ -29,6 +29,9 @@ class Quiz:
             if player.score >= winner.score:
                 winner = player
         return player
+    
+    def remove_player(self, player:Player):
+        self.players.remove(player)
 
     def get_players(self):
         return [ player.name for player in list(self.players)]
