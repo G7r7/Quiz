@@ -74,7 +74,7 @@ async def start_quiz(sid, data):
         
         quiz = mem_quiz[recieved_player_token]
         mem_quiz.play_quiz(quiz)
-        
+    
         await sio.emit("start_quiz", room=recieved_player_token)
         
         db =  next(get_db())
@@ -85,6 +85,7 @@ async def start_quiz(sid, data):
         
         for question in list_questions:
 
+            mem_quiz.unpause_quiz(quiz)
             await sio.emit("next_question", to=recieved_player_token)
             await sio.sleep(5)
             
@@ -100,6 +101,7 @@ async def start_quiz(sid, data):
             await sio.sleep(10)
             # Calculate score of each player
             await sio.emit("stop_sending", room=recieved_player_token)
+            mem_quiz.pause_quiz(quiz)
             
             correct_response = get_correct_responses(response)
             
@@ -110,17 +112,21 @@ async def start_quiz(sid, data):
                 
             await sio.emit("correct_response", response_to_send,to=recieved_player_token)
             
+        # Broadcast score
+        
+        scores_to_send = {player.name: player.score for player in sorted(quiz.players, key = lambda x:x.score, reversed=True)}
+        await sio.emit("scores",scores_to_send, room=recieved_player_token)    
+        
         # Broadcast Winner
+        #winner = quiz.get_winners()
         
-        winner = quiz.get_winners()
-        
-        await sio.emit("winner",{"name": winner.name}, room=recieved_player_token)
+        #await sio.emit("winner",{"name": winner.name}, room=recieved_player_token)
         
         await sio.sleep(5)
         
         # Clean infos in mem_quiz
         mem_quiz.end_quiz(quiz)
-
+        mem_quiz.delete((quiz.admin, quiz.id))
         await sio.close_room(recieved_player_token)
     
         
@@ -128,5 +134,8 @@ async def start_quiz(sid, data):
 @sio.event
 async def receive_response(sid, data):
     player = mem_quiz.get_player_from_sid()
-    player.add_response(data)
+    if not player.stop:
+        player.add_response(data)
+    else:
+        await sio.emit("quiz_close_to_response",to=sid)
     
