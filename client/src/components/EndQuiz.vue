@@ -5,6 +5,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const home = () => {
+  store.playerScores = [];
   router.push("/");
 };
 
@@ -20,15 +21,15 @@ const store = useQuizStore();
     </v-row>
     <v-row justify="center">
       <v-container
-        v-for="(player, index) in store.players"
-        :key="player.userId"
+        v-for="(player, index) in store.playerScores"
+        :key="player.name"
         md="8"
       >
         #{{ index + 1 }}
         <v-avatar color="info">
           <v-icon icon="mdi-account-circle"></v-icon>
         </v-avatar>
-        PlayerName
+        {{ player.name }} - Score : {{ player.score }}
       </v-container>
     </v-row>
     <v-row justify="end">
