@@ -133,7 +133,7 @@ const useQuizStore = defineStore("Quiz", {
       this.hasResponded = false;
       this.correctResponse = [];
       this.timer = 10;
-      this.interval = setInterval(() => {
+      (this.interval as any) = setInterval(() => {
         this.timer -= 1;
       }, 1000);
       router.push(`/quiz/${this.lobbyToken}`);
