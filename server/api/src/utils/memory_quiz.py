@@ -70,7 +70,7 @@ class MemoryQuiz:
         try:
             player = self.get_player_from_sid(sid)
             name = player.name
-            quiz = self[sid]
+            quiz = self[player.quiz]
             quiz.remove_player(player)
             del self.current_playing[sid]
         except KeyError:

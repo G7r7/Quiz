@@ -46,7 +46,7 @@ async def enter_quiz(sid, data):
         await sio.emit("quiz_closed_to_register", to=sid)
         return
         
-    player = Player(sid, player_name)
+    player = Player(sid, player_name, recieved_token)
                 
     if player in quiz.players:
         await sio.emit("user_already_joined", to=sid)

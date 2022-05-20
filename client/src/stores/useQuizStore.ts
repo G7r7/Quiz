@@ -150,6 +150,16 @@ const useQuizStore = defineStore("Quiz", {
       this.playerScores = data.data;
       router.push("/quiz/end");
     },
+    player_left(data: any) {
+      const index = this.players.findIndex((player) => player === data.name);
+      this.players.splice(index, 1);
+    },
+    room_closed(data: any) {
+      const index = this.lobbies.findIndex(
+        (lobby) => lobby.lobbyToken === data.room
+      );
+      this.lobbies.splice(index, 1);
+    },
   },
 });
 
