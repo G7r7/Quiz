@@ -28,6 +28,7 @@ const useQuizStore = defineStore("Quiz", {
           id: 57,
         },
       ],
+      playerScores: new Array<any>(),
       name: `GUEST-${getRandomInt(50)}`,
       interval: undefined,
       actualQuestion: 1,
@@ -144,6 +145,10 @@ const useQuizStore = defineStore("Quiz", {
     },
     correct_response(data: any) {
       this.correctResponse = Object.values(data);
+    },
+    scores(data: any) {
+      this.playerScores = data.data;
+      router.push("/quiz/end");
     },
   },
 });

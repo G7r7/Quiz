@@ -117,8 +117,8 @@ async def start_quiz(sid, data):
             
         # Broadcast score
         
-        scores_to_send = {player.name: player.score for player in sorted(quiz.players, key = lambda x:x.score, reverse=True)}
-        await sio.emit("scores",scores_to_send, room=recieved_player_token)    
+        scores_to_send = [{"name": player.name, "score": player.score} for player in sorted(quiz.players, key = lambda x:x.score, reverse=True)]
+        await sio.emit("scores",{"data": scores_to_send}, room=recieved_player_token)    
         
         # Broadcast Winner
         #winner = quiz.get_winners()
