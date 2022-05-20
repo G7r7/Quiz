@@ -11,6 +11,11 @@ if (!store.isGameJoined) {
   store.isGameJoined = true;
   store.joinLobby(route.params.id as string);
 }
+let loading = ref(false);
+const launchGame = () => {
+  loading.value = true
+  store.launchGame()
+}
 </script>
 
 <template>
@@ -25,7 +30,8 @@ if (!store.isGameJoined) {
     >
     </v-list-item>
   </v-list>
-  <v-btn color="primary" v-if="store.isRoomAdmin" @click="store.launchGame"
-    >Launch Game</v-btn
-  >
+  <v-btn color="primary" v-if="store.isRoomAdmin" @click="launchGame" :disabled="loading">
+    <span v-if="loading">Chargement <v-progress-circular size="20" indeterminate></v-progress-circular></span>
+    <span v-else>Démarrer le quiz</span>
+  </v-btn>
 </template>
