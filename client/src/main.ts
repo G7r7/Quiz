@@ -56,7 +56,7 @@ app.use(vuetify);
 app.use(createPinia());
 app.use(
   new VuePiniaWS({
-    connection: "http://localhost:5000",
+    connection: import.meta.env.VITE_API_ENDPOINT,
     pinia: { store: useQuizStore, actionPrefix: "" },
     options: { path: "/ws/socket.io/" },
   })
