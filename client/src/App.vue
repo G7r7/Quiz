@@ -16,9 +16,15 @@ if (token) {
   store.isSignedIn = true;
   OpenAPI.TOKEN = token;
   (async () => {
-    const me = await DefaultService.userMeUsersMePost();
-    store.name = me.user_name;
-    store.userId = me.id;
+    try {
+      const me = await DefaultService.userMeUsersMePost();
+      store.name = me.user_name;
+      store.userId = me.id;
+    } catch (error) {
+      store.isSignedIn = false;
+      OpenAPI.TOKEN = "";
+      window.localStorage.setItem("TOKEN", "");
+    }
   })();
 }
 store.io = vuePiniaWS.io;

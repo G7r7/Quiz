@@ -72,9 +72,9 @@ const useQuizStore = defineStore("Quiz", {
         .filter((response: any) => response.isSelected)
         .map((response: any) => response.id);
       if (this.question.multiple_answers) {
-        this.io.emit("response", responseIds);
+        this.io && (this.io as any).emit("response", responseIds);
       } else {
-        this.io.emit("response", responseIds[0]);
+        this.io && (this.io as any).emit("response", responseIds[0]);
       }
     },
     timer(data: any) {
