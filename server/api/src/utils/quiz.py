@@ -10,6 +10,7 @@ class Quiz:
         self.admin_token = admin_token
         self.player_token = player_token
         self.open_to_register = True
+        self.open_to_response = True
         self.name = name
         
     

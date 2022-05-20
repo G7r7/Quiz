@@ -37,12 +37,21 @@ def get_correct_responses(responses_server):
     return [response for response in responses_server["responses_server"] if response["is_true"]]
 
 def calculate_score_player(player: Player, correct_response):
-    try:
-        player_response = player.current_question_responses[-1]
-        if player_response in correct_response:
+    player_response = get_distinct_responses(player, len(correct_response))
+    if player_response in correct_response:
+        try:
             player.add_score(1)
-    except IndexError:
-        pass
+        except IndexError:
+            pass
     
     player.current_question_responses.clear()
         
+        
+def get_distinct_responses(player, n):
+    not_finished = True
+    len_player_response = len(player.current_question_responses)
+    distinct_responses = []
+    for response in player.current_question_responses:
+        if response not in distinct_responses:
+            distinct_responses.append(response)
+    return distinct_responses[-n:]

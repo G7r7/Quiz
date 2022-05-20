@@ -5,6 +5,7 @@ class Player:
         self.name = name
         self.current_question_responses = []
         self.score = 0
+        self.stop = False
         
     def add_response(self, response):
         self.current_question_responses.append(response)

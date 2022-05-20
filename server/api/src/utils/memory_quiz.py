@@ -21,6 +21,16 @@ class MemoryQuiz:
                 self.current_playing.pop(player.player_sid)
             except KeyError:
                 pass
+            
+    def pause_quiz(self, quiz: Quiz):
+        self.open_to_response = False
+        for player in quiz.players:
+            player.stop = True
+            
+    def unpause_quiz(self, quiz: Quiz):
+        self.open_to_response = True
+        for player in quiz.players:
+            player.stop = False
         
     def __getitem__(self,key: Tuple[int, int]) -> Quiz:
         return self.quizs[key]
