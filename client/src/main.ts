@@ -17,6 +17,7 @@ import FormQuiz from "./components/FormQuiz.vue";
 import EndQuiz from "./components/EndQuiz.vue";
 import CreateRoom from "./pages/CreateRoom.vue";
 import GameLobby from "./pages/GameLobby.vue";
+import Question from "./components/Question.vue";
 
 const routes = [
   { path: "/", component: Lobby },
@@ -24,13 +25,13 @@ const routes = [
   { path: "/signup", component: FormUser },
   { path: "/lobby/create", component: CreateRoom },
   { path: "/lobby/:id", component: GameLobby },
-  { path: "/quiz/:id", component: { template: "<div>Quiz</div>" } },
+  { path: "/quiz/:id", component: Question },
   { path: "/quiz/create", component: FormQuiz },
   { path: "/quiz/update", component: { template: "<div>Signin</div>" } },
   { path: "/quiz/end", component: EndQuiz },
 ];
 
-const router = createRouter({
+export const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });

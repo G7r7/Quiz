@@ -51,7 +51,8 @@ async def enter_quiz(sid, data):
         sio.enter_room(sid, recieved_token)
 
         await sio.emit("quizjoin", to=sid)
-        await sio.emit("new_player_joined", to=recieved_token)
+        await sio.emit("new_player_joined",{"name":player.name}, to=recieved_token)
+        await sio.emit("player_list",{"data": quiz.get_players()}, to=sid)
 
             
 

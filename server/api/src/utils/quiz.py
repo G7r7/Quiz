@@ -28,7 +28,10 @@ class Quiz:
             if player.score >= winner.score:
                 winner = player
         return player
-        
+
+    def get_players(self):
+        return [ player.name for player in list(self.players)]
+
     def __eq__(self, __o: object) -> bool:
         if isinstance(__o, Quiz):
             return self.id == __o.id
