@@ -25,13 +25,24 @@ async def parse_name(sio, sid, data):
     
 def create_data_qr(question: questionSchema.Question, responses: List[responseSchema.Response]):
     res, responses_server = dict(), dict()
-    res["question"] = {"content": question.content, "question_id": question.id, "number_question": question.number_question}
+    res["question"] = {"content": question.content, "question_id": int(question.id), "number_question": int(question.number_question)}
     res["responses"] = []
     responses_server["responses_server"] = []
     for response in responses:
-        res["responses"].append({"id": response.id, "content": response.content})
-        responses_server["responses_server"].append({"id": response.id, "content": response.content, "is_true": response.is_true})
+        res["responses"].append({"id": int(response.id), "content": response.content})
+        responses_server["responses_server"].append({"id": int(response.id), "content": response.content, "is_true": bool(response.is_true)})
     return res, responses_server
 
-def calculate_score_player(player: Player):
-    pass
+def get_correct_responses(responses_server):
+    return [response for response in responses_server["responses_server"] if response["is_true"]]
+
+def calculate_score_player(player: Player, correct_response):
+    try:
+        player_response = player.current_question_responses[-1]
+        if player_response in correct_response:
+            player.add_score(1)
+    except IndexError:
+        pass
+    
+    player.current_question_responses.clear()
+        

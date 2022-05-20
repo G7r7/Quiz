@@ -3,22 +3,15 @@ import { ref } from "vue";
 import { Question } from "../model/Question";
 import Response from "./Response.vue";
 import { inject } from "vue";
+import useQuizStore from "../stores/useQuizStore";
 
-interface QuestionProps {
-  question: Question;
-}
-
-const $vuePiniaWS: any = inject("vuePiniaWS");
-$vuePiniaWS.mount();
-$vuePiniaWS.io.emit("hello");
-defineProps<{ props: QuestionProps }>();
+const store = useQuizStore();
 
 const selected = ref([]);
 
-function handleValidation(event: any) {
-  console.log(event.target.value);
-
-  //todo send to server
+function handleValidation() {
+  store.respondQuestion(selected.value["0"]);
+  store.hasResponded = true;
 }
 </script>
 
@@ -26,7 +19,7 @@ function handleValidation(event: any) {
   <v-container>
     <v-row justify="center">
       <v-col md="8">
-        <v-card :title="props.question.content" class="ma-8"></v-card>
+        <v-card :title="store.question.question.content" class="ma-8"></v-card>
       </v-col>
     </v-row>
     <v-row justify="center">
@@ -34,23 +27,23 @@ function handleValidation(event: any) {
         <v-container>
           <v-row
             class="ml-6"
-            v-for="response in props.question.answers"
+            v-for="response in store.question.responses"
             :key="response.id"
           >
             <v-col md="4">
-              <Response
+              <!-- <Response
                 v-if="props.question.multipleAnswers"
                 :props="{
                   response: response,
                   multipleResponse: props.question.multipleAnswers,
                   selected: selected,
                 }"
-              />
-              <v-radio-group v-else v-model="selected">
+              /> -->
+              <v-radio-group v-model="selected">
                 <Response
                   :props="{
                     response: response,
-                    multipleResponse: props.question.multipleAnswers,
+                    multipleResponse: false,
                     selected: selected,
                   }"
                 />
@@ -62,7 +55,12 @@ function handleValidation(event: any) {
     </v-row>
     <v-row justify="end">
       <v-col md="8">
-        <v-btn @clic="handleValidation" color="success" size="large">
+        <v-btn
+          :disabled="store.hasResponded"
+          @click="handleValidation"
+          color="success"
+          size="large"
+        >
           <v-icon start icon="mdi-check"></v-icon>valider</v-btn
         >
       </v-col>

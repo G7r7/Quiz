@@ -4,7 +4,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
 from ..utils import oauth2
-from ..utils import oauth2
 from ..database.get_db import get_db
 from ..schemas import user as userSchemas
 from ..crud import user as userCrud

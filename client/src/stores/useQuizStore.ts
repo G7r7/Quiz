@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { DefaultService } from "../providers";
+import { router } from "../main";
 
 function getRandomInt(max: number) {
   return Math.floor(Math.random() * max);
@@ -8,11 +9,13 @@ function getRandomInt(max: number) {
 const useQuizStore = defineStore("Quiz", {
   state: () => {
     return {
+      isGameJoined: false,
       isSignedIn: false,
       userId: 53,
       io: undefined,
       isRoomAdmin: false,
       adminToken: undefined,
+      hasResponded: false,
       userQuizes: [
         {
           quiz_name: "TestQuiz",
@@ -31,30 +34,10 @@ const useQuizStore = defineStore("Quiz", {
       quizName: "tatata",
       quizId: 3320,
       lobbyToken: "",
-      lobbies: [
-        { lobbyToken: "DREUD224342120", numberPlayers: 10, quizName: "test" },
-        {
-          lobbyToken: "CDU2340542342",
-          numberPlayers: 5,
-          quizName: "C'est un quiz",
-        },
-      ],
-      players: [{ userId: 0, isDone: true, name: "borehurc" }],
-      question: {
-        quiz_id: 0,
-        id: 0,
-        content: "Ceci est une question ?",
-        multiple_answers: true,
-        totalTime: 30,
-        responses: [
-          {
-            question_id: 0,
-            id: 0,
-            content: "oui",
-            isSelected: false,
-          },
-        ],
-      },
+      lobbies: new Array<any>(),
+      players: new Array<string>(),
+      question: <any>{},
+      correctResponse: <any>{},
     };
   },
   actions: {
@@ -65,8 +48,10 @@ const useQuizStore = defineStore("Quiz", {
         isDone: false,
       }));
     },
-    userJoined(user: any) {
-      this.players.push(user);
+    new_player_joined(user: any) {
+      if (!this.players.includes(user.name)) {
+        this.players.push(user.name);
+      }
     },
     userLeft(user: any) {
       this.players = this.players.filter(
@@ -99,21 +84,90 @@ const useQuizStore = defineStore("Quiz", {
       this.score = data;
     },
     joinLobby(lobbyToken: string) {
+      this.isGameJoined = true;
       this.lobbyToken = lobbyToken;
-      this.io &&
-        (this.io as any).emit("enter_quiz", {
-          token: lobbyToken,
-          name: this.name,
+      this.io.emit("enter_quiz", { player_token: lobbyToken, name: this.name });
+    },
+    launchGame() {
+      this.io.emit("start_quiz", {
+        player_token: this.lobbyToken,
+        admin_token: this.adminToken,
+      });
+    },
+    addRoom(lobbyToken: string) {
+      this.io.emit("new_room_added", {
+        player_token: lobbyToken,
+        quiz_name: this.quizName,
+        number_players: 1,
+      });
+    },
+    new_room_added(data: any) {
+      this.lobbies.push({
+        lobbyToken: data.player_token,
+        quizName: data.quiz_name,
+        numberPlayers: data.number_players,
+      });
+    },
+    all_rooms(data: any) {
+      const length = Object.keys(data).length;
+      for (let i = 0; i < length; i++) {
+        console.log(data[i]);
+        this.lobbies.push({
+          lobbyToken: data[i].player_token,
+          numberPlayers: data[i].number_players,
+          quizName: data[i].quiz_name,
         });
+      }
     },
-    start_quiz() {},
-    send_question(question: any) {},
-    async getUserQuizs() {
-      const quizes = await DefaultService.getQuizsQuizListUserIdGet(
-        this.userId
-      );
+    player_list(data: any) {
+      for (let i = 0; i < data.data.length; i++) {
+        if (!this.players.includes(data.data[i])) {
+          this.players.push(data.data[i]);
+        }
+      }
     },
-    launchGame() {},
+    send_question(data: any) {
+      this.question = data.data;
+      this.hasResponded = false;
+      this.correctResponse = [];
+      router.push(`/quiz/${this.lobbyToken}`);
+      // {
+      //   "data": {
+      //     "question": {
+      //       "content": "zerzerze",
+      //       "question_id": 3,
+      //       "number_question": 3
+      //     },
+      //     "responses": [
+      //       {
+      //         "id": 4,
+      //         "content": "rezrzerg"
+      //       },
+      //       {
+      //         "id": 3,
+      //         "content": "rezrze"
+      //       },
+      //       {
+      //         "id": 7,
+      //         "content": "rezrze"
+      //       },
+      //       {
+      //         "id": 11,
+      //         "content": "rezrzerze"
+      //       }
+      //     ]
+      //   }
+      // }
+    },
+    respondQuestion(selected: number) {
+      this.io.emit("receive_response", selected);
+    },
+    stop_sending() {
+      this.hasResponded = true;
+    },
+    correct_response(data: any) {
+      this.correctResponse = Object.values(data);
+    },
   },
 });
 
