@@ -20,6 +20,11 @@ async def connect(sid, environ, auth):
         data[i] = {"player_token": quiz.player_token.get_token(), "quiz_name": quiz.name, "number_players": len(quiz.players)}
     await sio.emit("all_rooms", data, to=sid)
 
+@sio.event
+async def disconnect(sid):
+    name = mem_quiz.remove_player(sid)
+    await sio.emit("player_left", {"name": name})
+    
 
 @sio.event
 async def enter_quiz(sid, data):
@@ -41,15 +46,13 @@ async def enter_quiz(sid, data):
         await sio.emit("quiz_closed_to_register", to=sid)
         return
         
-    player = Player(sid, player_name)
+    player = Player(sid, player_name, recieved_token)
                 
     if player in quiz.players:
         await sio.emit("user_already_joined", to=sid)
     else:
         quiz.add_player(player)
-        
         sio.enter_room(sid, recieved_token)
-
         await sio.emit("quizjoin", to=sid)
         await sio.emit("new_player_joined",{"name":player.name}, to=recieved_token)
         await sio.emit("player_list",{"data": quiz.get_players()}, to=sid)
@@ -128,6 +131,7 @@ async def start_quiz(sid, data):
         mem_quiz.end_quiz(quiz)
         mem_quiz.delete((quiz.admin, quiz.id))
         await sio.close_room(recieved_player_token)
+        await sio.emit("room_closed", {"room": recieved_player_token})
     
         
 

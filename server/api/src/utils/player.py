@@ -1,11 +1,12 @@
 class Player:
     
-    def __init__(self, player_sid: str, name: str) -> None:
+    def __init__(self, player_sid: str, name: str, quiz: str) -> None:
         self.player_sid = player_sid
         self.name = name
         self.current_question_responses = []
         self.score = 0
         self.stop = False
+        self.quiz = quiz
         
     def add_response(self, response):
         self.current_question_responses.append(response)
