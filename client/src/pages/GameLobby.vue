@@ -13,9 +13,9 @@ if (!store.isGameJoined) {
 }
 let loading = ref(false);
 const launchGame = () => {
-  loading.value = true
-  store.launchGame()
-}
+  loading.value = true;
+  store.launchGame();
+};
 </script>
 
 <template>
@@ -30,8 +30,16 @@ const launchGame = () => {
     >
     </v-list-item>
   </v-list>
-  <v-btn color="primary" v-if="store.isRoomAdmin" @click="launchGame" :disabled="loading">
-    <span v-if="loading">Chargement <v-progress-circular size="20" indeterminate></v-progress-circular></span>
+  <v-btn
+    color="primary"
+    v-if="store.isRoomAdmin"
+    @click="launchGame"
+    :disabled="loading"
+  >
+    <span v-if="loading"
+      >Chargement
+      <v-progress-circular size="20" indeterminate></v-progress-circular
+    ></span>
     <span v-else>Démarrer le quiz</span>
   </v-btn>
 </template>
