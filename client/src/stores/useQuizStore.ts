@@ -29,6 +29,7 @@ const useQuizStore = defineStore("Quiz", {
         },
       ],
       name: `GUEST-${getRandomInt(50)}`,
+      interval: undefined,
       actualQuestion: 1,
       timer: 0,
       quizName: "tatata",
@@ -76,9 +77,6 @@ const useQuizStore = defineStore("Quiz", {
       } else {
         this.io && (this.io as any).emit("response", responseIds[0]);
       }
-    },
-    timer(data: any) {
-      this.timer = data.timer;
     },
     score(data: any) {
       this.score = data;
@@ -130,40 +128,19 @@ const useQuizStore = defineStore("Quiz", {
       this.question = data.data;
       this.hasResponded = false;
       this.correctResponse = [];
+      this.timer = 10;
+      this.interval = setInterval(() => {
+        this.timer -= 1;
+      }, 1000);
       router.push(`/quiz/${this.lobbyToken}`);
-      // {
-      //   "data": {
-      //     "question": {
-      //       "content": "zerzerze",
-      //       "question_id": 3,
-      //       "number_question": 3
-      //     },
-      //     "responses": [
-      //       {
-      //         "id": 4,
-      //         "content": "rezrzerg"
-      //       },
-      //       {
-      //         "id": 3,
-      //         "content": "rezrze"
-      //       },
-      //       {
-      //         "id": 7,
-      //         "content": "rezrze"
-      //       },
-      //       {
-      //         "id": 11,
-      //         "content": "rezrzerze"
-      //       }
-      //     ]
-      //   }
-      // }
     },
     respondQuestion(selected: number) {
       this.io.emit("receive_response", selected);
     },
     stop_sending() {
       this.hasResponded = true;
+      this.timer = 0;
+      clearInterval(this.interval);
     },
     correct_response(data: any) {
       this.correctResponse = Object.values(data);

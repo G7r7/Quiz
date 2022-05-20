@@ -114,7 +114,7 @@ async def start_quiz(sid, data):
             
         # Broadcast score
         
-        scores_to_send = {player.name: player.score for player in sorted(quiz.players, key = lambda x:x.score, reversed=True)}
+        scores_to_send = {player.name: player.score for player in sorted(quiz.players, key = lambda x:x.score, reverse=True)}
         await sio.emit("scores",scores_to_send, room=recieved_player_token)    
         
         # Broadcast Winner
@@ -133,9 +133,7 @@ async def start_quiz(sid, data):
 
 @sio.event
 async def receive_response(sid, data):
-    player = mem_quiz.get_player_from_sid()
-    if not player.stop:
-        player.add_response(data)
-    else:
-        await sio.emit("quiz_close_to_response",to=sid)
+    player = mem_quiz.get_player_from_sid(sid)
+    player.add_response(data)
+    # await sio.emit("quiz_close_to_response",to=sid)
     

@@ -4,6 +4,7 @@ import { Question } from "../model/Question";
 import Response from "./Response.vue";
 import { inject } from "vue";
 import useQuizStore from "../stores/useQuizStore";
+import { computed } from "@vue/reactivity";
 
 const store = useQuizStore();
 
@@ -13,10 +14,17 @@ function handleValidation() {
   store.respondQuestion(selected.value["0"]);
   store.hasResponded = true;
 }
+const progress = computed(() => 10 - store.timer);
 </script>
 
 <template>
   <v-container>
+    <div v-if="store.timer !== 0">{{ store.timer }}</div>
+    <v-progress-linear
+      v-if="store.timer !== 0"
+      max="10"
+      :model-value="progress"
+    />
     <v-row justify="center">
       <v-col md="8">
         <v-card :title="store.question.question.content" class="ma-8"></v-card>
@@ -31,14 +39,6 @@ function handleValidation() {
             :key="response.id"
           >
             <v-col md="4">
-              <!-- <Response
-                v-if="props.question.multipleAnswers"
-                :props="{
-                  response: response,
-                  multipleResponse: props.question.multipleAnswers,
-                  selected: selected,
-                }"
-              /> -->
               <v-radio-group v-model="selected">
                 <Response
                   :props="{
