@@ -1,6 +1,6 @@
 ﻿<script setup lang="ts">
 import { ref } from "vue";
-import { DefaultService } from "../providers";
+import { ApiError, DefaultService } from "../providers";
 import { useRoute, useRouter } from "vue-router";
 import { computed } from "vue";
 import useQuizStore from "../stores/useQuizStore";
@@ -24,6 +24,7 @@ const passwordRules = [
 const valid = ref(true);
 const showPass = ref(false);
 const store = useQuizStore();
+let error = ref("");
 async function handleValidation() {
   try {
     const newUser = await DefaultService.createUserUsersPost({
@@ -41,7 +42,11 @@ async function handleValidation() {
     store.isSignedIn = true;
     store.name = newUser.user_name;
     router.push("/");
-  } catch (err) {
+  } catch (err: any) {
+    store.isSignedIn = false;
+    OpenAPI.TOKEN = "";
+    window.localStorage.setItem("TOKEN", "");
+    error.value = err.body.detail;
     console.error("Failed to create user !");
   }
 }
@@ -58,7 +63,11 @@ async function handleConnexion() {
     store.isSignedIn = true;
     store.name = log.user_name;
     router.push("/");
-  } catch (err) {
+  } catch (err: any) {
+    store.isSignedIn = false;
+    OpenAPI.TOKEN = "";
+    window.localStorage.setItem("TOKEN", "");
+    error.value = err.body.detail;
     console.error("Failed to log in.");
   }
 }
@@ -106,9 +115,18 @@ async function handleConnexion() {
             color="success"
             size="large"
             class="mr-4"
-            @click="handleValidation"
+            @click="
+              (event) => {
+                handleValidation();
+              }
+            "
             >Sign up</v-btn
           >
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-alert v-if="error != ''" type="error">{{ error }}</v-alert>
         </v-col>
       </v-row>
     </v-container>

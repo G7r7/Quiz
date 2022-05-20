@@ -63,7 +63,7 @@ async function handleSubmit(validate: any) {
       await Promise.all(promises);
       isCreate.value = true;
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 }

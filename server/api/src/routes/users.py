@@ -1,6 +1,7 @@
 from typing import List
 from fastapi import Depends, APIRouter, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from ..utils import oauth2
 from ..utils import oauth2
@@ -12,7 +13,10 @@ router = APIRouter()
 
 @router.post("/users/", response_model=userSchemas.User)
 def create_user(user: userSchemas.UserCreate, db: Session = Depends(get_db)):
-    return userCrud.create_user(db=db, user=user)
+    try:
+        return userCrud.create_user(db=db, user=user)
+    except IntegrityError:
+        raise HTTPException(409, detail='User already exist')
 
 @router.post("/users/login", response_model=userSchemas.UserLogged)
 def log_user(user: userSchemas.UserLogin, db: Session = Depends(get_db)):
