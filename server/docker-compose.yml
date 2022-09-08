@@ -1,5 +1,9 @@
 version: "3.3"
 
+networks:
+  traefik:
+    external: true
+
 services:
   api:
     env_file:
@@ -10,41 +14,48 @@ services:
     build: ./api
     volumes:
       - ./api:/app
-    ports:
-      - 5000:5000
     working_dir: /app
-    # command: tail -f /dev/null
+    restart: always
     command:
       [
         "uvicorn",
         "src.main:app",
         "--host=0.0.0.0",
-        "--port=5000",
-        "--ssl-keyfile=privkey.pem",
-        "--ssl-certfile=fullchain.pem",
+        "--port=${API_PORT}",
       ]
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`${API_DOMAIN}`)"
+      - "traefik.http.services.api.loadbalancer.server.port=${API_PORT}"
+      - "traefik.http.routers.api.tls.certresolver=${TRAEFIK_CERT_RESOLVER}"
+
   db:
     container_name: db
-    image: postgres:12.3-alpine
-    volumes:
-      - ./db/scripts:/docker-entrypoint-initdb.d
-      - ./db/data:/var/lib/postgresql/data
+    image: mariadb:10.9.2-jammy
     restart: always
-    ports:
-      - 5432:5432
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      PGDATA: /var/lib/postgresql/data/pgdata
-  pgadmin:
-    container_name: pgadmin
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
+    networks:
+      - traefik
+
+  adminer:
+    container_name: adminer
+    restart: always
     depends_on:
       - db
-    image: dpage/pgadmin4:6.9
-    ports:
-      - 4000:80
-    volumes:
-      - ./pgadmin/servers.json:/pgadmin4/servers.json
+    image: adminer:4.8.1-standalone
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      ADMINER_DEFAULT_SERVER: db
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.adminer.rule=Host(`${ADMINER_DOMAIN}`)"
+      - "traefik.http.routers.adminer.tls.certresolver=${TRAEFIK_CERT_RESOLVER}"
+
+

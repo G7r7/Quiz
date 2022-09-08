@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-SQLALCHEMY_DATABASE_URL = "postgresql://" + os.getenv('POSTGRES_USER') + ":" + os.getenv('POSTGRES_PASSWORD') + "@db/quiz"
+SQLALCHEMY_DATABASE_URL = "mariadb+pymysql://" + os.getenv('MARIADB_USER') + ":" + os.getenv('MARIADB_PASSWORD') + "@db/" + os.getenv('MARIADB_DATABASE')
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

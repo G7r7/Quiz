@@ -486,11 +486,6 @@
   "resolved" "https://registry.npmjs.org/engine.io-parser/-/engine.io-parser-5.0.4.tgz"
   "version" "5.0.4"
 
-"esbuild-linux-64@0.14.39":
-  "integrity" "sha512-4tcgFDYWdI+UbNMGlua9u1Zhu0N5R6u9tl5WOM8aVnNX143JZoBZLpCuUr5lCKhnD0SCO+5gUyMfupGrHtfggQ=="
-  "resolved" "https://registry.npmjs.org/esbuild-linux-64/-/esbuild-linux-64-0.14.39.tgz"
-  "version" "0.14.39"
-
 "esbuild@^0.14.27":
   "integrity" "sha512-2kKujuzvRWYtwvNjYDY444LQIA3TyJhJIX3Yo4+qkFlDDtGlSicWgeHVJqMUP/2sSfH10PGwfsj+O2ro1m10xQ=="
   "resolved" "https://registry.npmjs.org/esbuild/-/esbuild-0.14.39.tgz"
